@@ -642,16 +642,34 @@ textarea{resize:none;font-size:13px;height:68px}
   <!-- API SETTINGS -->
   <div class="card">
     <div class="card-title"><div class="ibadge" style="background:var(--blue-p)">⚙️</div>KI-Einstellungen</div>
-    <div class="ig">
-      <div class="lbl">Cloudflare Worker URL</div>
-      <input type="text" id="apiUrlInput" placeholder="https://dein-worker.workers.dev"
-        style="font-size:13px">
+
+    <!-- OPTION A: Cloudflare Proxy -->
+    <div style="margin-bottom:14px">
+      <div class="lbl">Option A – Cloudflare Worker URL</div>
+      <input type="text" id="proxyUrlInput" placeholder="https://keto-proxy.xxx.workers.dev"
+        style="font-size:13px;margin-bottom:6px">
+      <div style="font-size:11px;color:var(--mid);line-height:1.5">
+        Für geteilte Apps – Key bleibt sicher im Worker versteckt.
+      </div>
     </div>
-    <div class="hint">Trage hier die URL deines Cloudflare Workers ein – dann funktioniert die KI-Schätzung über GitHub Pages.</div>
+
+    <div style="text-align:center;font-size:11px;color:var(--lt);margin-bottom:14px">── oder ──</div>
+
+    <!-- OPTION B: Direkter API Key -->
+    <div style="margin-bottom:14px">
+      <div class="lbl">Option B – Direkter API Key</div>
+      <input type="password" id="apiKeyInput" placeholder="sk-ant-api03-..."
+        autocomplete="off" style="font-size:14px;margin-bottom:6px">
+      <div style="font-size:11px;color:var(--mid);line-height:1.5">
+        Für persönliche Nutzung – Key wird lokal gespeichert.
+        <a href="https://console.anthropic.com" target="_blank" style="color:var(--blue)">Key holen →</a>
+      </div>
+    </div>
+
     <div id="apiStatus" style="margin-bottom:10px"></div>
     <div class="btn-row">
-      <button class="btn btn-sec" onclick="testApiUrl()">Verbindung testen</button>
-      <button class="btn" onclick="saveApiUrl()">Speichern</button>
+      <button class="btn btn-sec" onclick="testAiConnection()">Verbindung testen</button>
+      <button class="btn" onclick="saveAiSettings()">Speichern</button>
     </div>
   </div>
 
@@ -768,9 +786,44 @@ let S={
 try{const sv=_store.get('keto_v4');if(sv)S=JSON.parse(sv);}catch(e){}
 function save(){try{_store.set('keto_v4',JSON.stringify(S));}catch(e){}}
 
-// ============ API PROXY CONFIG ============
-// Muss nach _store stehen damit get() funktioniert
-let API_URL = _store.get('keto_api_url') || 'https://api.anthropic.com/v1/messages';
+// ============ API CONFIG ============
+const ANTHROPIC_ENDPOINT = 'https://api.anthropic.com/v1/messages';
+
+function getApiKey()   { return _store.get('keto_api_key')   || ''; }
+function getProxyUrl()  { return _store.get('keto_proxy_url') || ''; }
+
+// Central fetch – nutzt Proxy wenn eingetragen, sonst direkten Key
+async function callAI(body) {
+  const proxyUrl = getProxyUrl();
+  const apiKey   = getApiKey();
+
+  if (!proxyUrl && !apiKey) {
+    throw new Error('Keine KI konfiguriert – bitte im Backup-Tab unter KI-Einstellungen einen API Key oder Proxy eintragen.');
+  }
+
+  let url, headers;
+
+  if (proxyUrl) {
+    // Cloudflare Worker – kein Key im Header nötig, Worker hat den Key
+    url = proxyUrl;
+    headers = { 'Content-Type': 'application/json' };
+  } else {
+    // Direkt zu Anthropic mit Key
+    url = ANTHROPIC_ENDPOINT;
+    headers = {
+      'Content-Type': 'application/json',
+      'x-api-key': apiKey,
+      'anthropic-version': '2023-06-01',
+      'anthropic-dangerous-direct-browser-access': 'true'
+    };
+  }
+
+  const res = await Promise.race([
+    fetch(url, { method: 'POST', headers, body: JSON.stringify(body) }),
+    new Promise((_,r) => setTimeout(() => r(new Error('Timeout nach 30s')), 30000))
+  ]);
+  return res;
+}
 
 const TODAY=()=>new Date().toISOString().split('T')[0];
 const fmt=n=>(+n||0).toFixed(0);
@@ -1180,7 +1233,7 @@ async function analyzeWithAI(){
   const tot=getDayTotals(TODAY());
   const prompt=`Analysiere diese Keto-Mahlzeit:\n"${desc}"\n\nBisherige Tagesmakros: Fett ${fmt(tot.fat)}g, Eiweiß ${fmt(tot.prot)}g, KH ${fmt(tot.carb)}g\nZiele: Fett ${TGT.fat}g, Eiweiß max ${TGT.prot}g, KH max 20g\n\nWICHTIG: Prüfe ob Eiweiß das Tagesziel überschreiten würde.\nAntworte NUR mit JSON:\n{"kcal":0,"fat":0,"prot":0,"carb":0,"feedback":"Bewertung auf Deutsch inkl. Eiweiß-Hinweis falls nötig"}`;
   try{
-    const res=await Promise.race([fetch(API_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,messages:[{role:'user',content:prompt}]})}),new Promise((_,r)=>setTimeout(()=>r(new Error('timeout')),30000))]);
+    const res=await callAI({model:'claude-3-5-haiku-20241022',max_tokens:1000,messages:[{role:'user',content:prompt}]});
     const data=await res.json();
     const parsed=JSON.parse((data.content?.[0]?.text||'{}').replace(/```json|```/g,'').trim());
     document.getElementById('mKcal').value=parsed.kcal||'';document.getElementById('mFat').value=parsed.fat||'';document.getElementById('mProt').value=parsed.prot||'';document.getElementById('mCarb').value=parsed.carb||'';
@@ -1434,7 +1487,7 @@ async function generateWeekReview(){
   }
   const SYS=`Du bist Caros Keto-Coach. Caro: 40 Jahre, Start 76,5 kg, Ziel 62,5 kg. Keto-Ziele: max 20g KH, ${TGT.prot}g Eiweiß, ${TGT.fat}g Fett. Caro neigt zu viel Eiweiß. Bürojob, Spazierengehen. Schreib einen motivierenden Wochenrückblick auf Deutsch: Was lief gut? Was verbessern? Konkrete Tipps für nächste Woche. Max 200 Wörter.`;
   try{
-    const res=await fetch(API_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,system:SYS,messages:[{role:'user',content:summary}]})});
+    const res=await callAI({model:'claude-3-5-haiku-20241022',max_tokens:1000,system:SYS,messages:[{role:'user',content:summary}]});
     const data=await res.json();
     wrap.innerHTML=`<div class="ai-review"><div class="ai-tag">✦ KI-Wochenanalyse</div><div class="ai-text">${data.content?.[0]?.text||'Keine Antwort.'}</div></div>`;
   }catch(e){wrap.innerHTML='<div class="ai-review"><div class="ai-text">Verbindungsfehler.</div></div>';}
@@ -1449,10 +1502,13 @@ async function askAI(){
   wrap.innerHTML='<div class="ai-bubble"><div class="ai-tag">✦ Denkt nach...</div><div class="ai-text">...</div></div>';
   const tot=getDayTotals(TODAY());
   try{
-    const res=await fetch(API_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,system:SYS,messages:[{role:'user',content:`Tagesstand: Fett ${fmt(tot.fat)}g, Eiweiß ${fmt(tot.prot)}g, KH ${fmt(tot.carb)}g, kcal ${fmt(tot.kcal)}, Schritte ${getDaySteps(TODAY())}, Wasser ${getWaterMl(TODAY())}ml.\n\nFrage: ${q}`}]})});
+    const res=await callAI({model:'claude-3-5-haiku-20241022',max_tokens:1000,system:SYS,messages:[{role:'user',content:`Tagesstand: Fett ${fmt(tot.fat)}g, Eiweiß ${fmt(tot.prot)}g, KH ${fmt(tot.carb)}g, kcal ${fmt(tot.kcal)}, Schritte ${getDaySteps(TODAY())}, Wasser ${getWaterMl(TODAY())}ml.\n\nFrage: ${q}`}]});
     const data=await res.json();
     wrap.innerHTML=`<div class="ai-bubble"><div class="ai-tag">✦ Antwort</div><div class="ai-text">${data.content?.[0]?.text||'Keine Antwort.'}</div></div>`;
-  }catch(e){wrap.innerHTML='<div class="ai-bubble"><div class="ai-text">Verbindungsfehler.</div></div>';}
+  }catch(e){const errMsg = e.message.includes('API Key') 
+    ? e.message + '<br><br>→ Tab <b>Backup</b> → KI-Einstellungen → Key eintragen'
+    : 'Verbindungsfehler: ' + e.message;
+  wrap.innerHTML='<div class="ai-bubble"><div class="ai-tag">Fehler</div><div class="ai-text">' + errMsg + '</div></div>';}
   btn.textContent='Fragen →';btn.disabled=false;
 }
 
@@ -1663,11 +1719,8 @@ async function lookupBarcode(barcode) {
   // 2. Fallback: let AI identify it
   resultEl.innerHTML = '<div style="color:#FFD83D;font-size:13px;padding:12px;text-align:center">🤖 KI sucht Produkt...</div>';
   try {
-    const res = await fetch(API_URL, {
-      method: 'POST', headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({ model:'claude-sonnet-4-20250514', max_tokens:1000,
-        messages:[{role:'user',content:`Barcode: ${barcode}. Welches Lebensmittel ist das (wahrscheinlich deutsch/europäisch)? Schätze Nährwerte pro 100g. Antworte NUR JSON: {"name":"","kcal":0,"fat":0,"prot":0,"carb":0,"portion":100}`}]})
-    });
+    const res = await callAI({ model:'claude-3-5-haiku-20241022', max_tokens:1000,
+        messages:[{role:'user',content:`Barcode: ${barcode}. Welches Lebensmittel ist das (wahrscheinlich deutsch/europäisch)? Schätze Nährwerte pro 100g. Antworte NUR JSON: {"name":"","kcal":0,"fat":0,"prot":0,"carb":0,"portion":100}`}]});
     const data = await res.json();
     const parsed = JSON.parse((data.content?.[0]?.text||'{}').replace(/\`\`\`json|\`\`\`/g,'').trim());
     if (parsed.name) {
@@ -1830,14 +1883,11 @@ Heutiger Eiweiß-Stand: ${fmt(tot.prot)}g (Ziel: ${TGT.prot}g), KH: ${fmt(tot.ca
 Aktuelle Ernährung: Hauptsächlich Eier, Hackfleisch, Lachs, Frischkäse, Joghurt.`;
 
   try {
-    const res = await fetch(API_URL, {
-      method: 'POST', headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({
+    const res = await callAI({
         model: 'claude-sonnet-4-20250514', max_tokens: 1000,
         system: `Du bist Caros Keto-Coach. Caro: 40 Jahre, Bürojob, kein Joggen (Beckenboden), nur Spazierengehen. Keto-Erfahrung: hat bereits 30 kg damit verloren. Isst oft zu viel Eiweiß. Gib konkrete, sofort umsetzbare Tipps zum Plateau-Brechen. Max. 180 Wörter, auf Deutsch, warm und motivierend.`,
         messages: [{role:'user', content: context + '\n\nWas soll ich konkret diese Woche anders machen um das Plateau zu brechen?'}]
-      })
-    });
+      });
     const data = await res.json();
     el.innerHTML = `<div style="background:rgba(245,200,0,.08);border-radius:9px;padding:12px;border:1px solid rgba(245,200,0,.2)">
       <div style="font-size:9px;color:#F5C800;text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px">✦ Persönlicher KI-Tipp</div>
@@ -2311,63 +2361,75 @@ function renderWaterStreaks() {
 }
 
 
-// ============ API URL MANAGEMENT ============
-function saveApiUrl() {
-  const url = document.getElementById('apiUrlInput')?.value?.trim();
-  if (!url) { showToast('Bitte URL eingeben'); return; }
-  if (!url.startsWith('https://')) { showToast('URL muss mit https:// beginnen'); return; }
-  _store.set('keto_api_url', url);
-  // Reload API_URL
-  API_URL = url;
-  showApiStatus('ok', '✓ Gespeichert! KI-Schätzung ist jetzt aktiv.');
-  showToast('✓ Proxy-URL gespeichert');
-}
-
-async function testApiUrl() {
-  const url = document.getElementById('apiUrlInput')?.value?.trim()
-    || _store.get('keto_api_url');
-  if (!url) { showToast('Bitte erst URL eingeben'); return; }
-
-  showApiStatus('loading', '⏳ Verbindung wird getestet...');
-  try {
-    const res = await Promise.race([
-      fetch(url, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          model: 'claude-3-5-haiku-20241022',
-          max_tokens: 10,
-          messages: [{ role: 'user', content: 'Hi' }]
-        })
-      }),
-      new Promise((_, r) => setTimeout(() => r(new Error('timeout')), 8000))
-    ]);
-    const responseText = await res.text();
-    if (res.ok || res.status === 200) {
-      showApiStatus('ok', '✓ Verbindung funktioniert! KI-Schätzung ist aktiv.');
-      _store.set('keto_api_url', url);
-      API_URL = url;
-    } else {
-      // Parse Anthropic error for user-friendly message
-      let detail = '';
-      try {
-        const err = JSON.parse(responseText);
-        detail = err.error?.message || err.details || responseText;
-      } catch(e) { detail = responseText; }
-
-      let tip = '';
-      if (res.status === 400) tip = 'Mögliche Ursachen: falscher Modellname im Worker, oder Key-Format ungültig.';
-      if (res.status === 401) tip = 'API Key ungültig – bitte in Cloudflare nochmal prüfen.';
-      if (res.status === 403) tip = 'Zugriff verweigert – Origin nicht erlaubt im Worker.';
-      if (res.status === 429) tip = 'Zu viele Anfragen – kurz warten.';
-
-      showApiStatus('bad',
-        `Status ${res.status}: ${detail.substring(0,120)}<br><br><b>Tipp:</b> ${tip}`);
-    }
-  } catch(e) {
-    showApiStatus('bad', `✗ Keine Verbindung: ${e.message}`);
+// ============ API KEY MANAGEMENT ============
+function saveAiSettings() {
+  const proxy = document.getElementById('proxyUrlInput')?.value?.trim();
+  const key   = document.getElementById('apiKeyInput')?.value?.trim();
+  if (!proxy && !key) { showToast('Bitte URL oder Key eingeben'); return; }
+  if (proxy) {
+    _store.set('keto_proxy_url', proxy);
+    _store.remove('keto_api_key'); // nicht beides gleichzeitig
+    showApiStatus('ok', '✓ Cloudflare Worker gespeichert.');
+    showToast('✓ Proxy gespeichert');
+  } else {
+    if (!key.startsWith('sk-ant-')) { showToast('Key muss mit sk-ant- beginnen'); return; }
+    _store.set('keto_api_key', key);
+    _store.remove('keto_proxy_url');
+    showApiStatus('ok', '✓ API Key gespeichert.');
+    showToast('✓ Key gespeichert');
   }
 }
+
+// Keep old names as aliases
+function saveApiKey() { saveAiSettings(); }
+
+async function testAiConnection() {
+  const proxy = document.getElementById('proxyUrlInput')?.value?.trim() || getProxyUrl();
+  const key   = document.getElementById('apiKeyInput')?.value?.trim()   || getApiKey();
+
+  if (!proxy && !key) { showToast('Bitte erst URL oder Key eingeben'); return; }
+  showApiStatus('loading', '⏳ Verbindung wird getestet...');
+
+  const testBody = {
+    model: 'claude-3-5-haiku-20241022',
+    max_tokens: 10,
+    messages: [{ role: 'user', content: 'Hi' }]
+  };
+
+  try {
+    let url, headers;
+    if (proxy) {
+      url = proxy;
+      headers = { 'Content-Type': 'application/json' };
+    } else {
+      url = ANTHROPIC_ENDPOINT;
+      headers = {
+        'Content-Type': 'application/json',
+        'x-api-key': key,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true'
+      };
+    }
+    const res = await Promise.race([
+      fetch(url, { method:'POST', headers, body: JSON.stringify(testBody) }),
+      new Promise((_,r) => setTimeout(() => r(new Error('Timeout')), 10000))
+    ]);
+    const data = await res.json();
+    if (res.ok) {
+      if (proxy) _store.set('keto_proxy_url', proxy);
+      else _store.set('keto_api_key', key);
+      showApiStatus('ok', `✓ Verbindung funktioniert! ${proxy ? 'Cloudflare Worker' : 'Direkter Key'} aktiv.`);
+      showToast('✓ KI bereit!');
+    } else {
+      const msg = data?.error?.message || data?.details || JSON.stringify(data);
+      showApiStatus('bad', `Fehler ${res.status}: ${String(msg).substring(0,120)}`);
+    }
+  } catch(e) {
+    showApiStatus('bad', `✗ ${e.message}`);
+  }
+}
+
+async function testApiKey() { await testAiConnection(); }
 
 function showApiStatus(type, msg) {
   const el = document.getElementById('apiStatus');
@@ -2379,15 +2441,13 @@ function showApiStatus(type, msg) {
 }
 
 function initApiSettings() {
-  const saved = _store.get('keto_api_url');
-  const input = document.getElementById('apiUrlInput');
-  if (saved && input) {
-    input.value = saved;
-    window.API_URL = saved;
-    showApiStatus('ok', '✓ Proxy konfiguriert – KI-Funktionen aktiv.');
-  } else {
-    showApiStatus('warn', '⚠️ Noch kein Proxy eingerichtet – KI-Funktionen nicht verfügbar. Cloudflare Worker URL eintragen.');
-  }
+  const proxy = getProxyUrl();
+  const key   = getApiKey();
+  const pi = document.getElementById('proxyUrlInput');
+  const ki = document.getElementById('apiKeyInput');
+  if (proxy && pi) { pi.value = proxy; showApiStatus('ok', '✓ Cloudflare Worker konfiguriert – KI aktiv.'); }
+  else if (key && ki) { ki.value = key; showApiStatus('ok', '✓ API Key gespeichert – KI aktiv.'); }
+  else { showApiStatus('warn', '⚠️ Noch keine KI konfiguriert – Option A oder B ausfüllen.'); }
 }
 
 // ============ INIT ============
