@@ -639,6 +639,22 @@ textarea{resize:none;font-size:13px;height:68px}
 <!-- ===== BACKUP ===== -->
 <div id="tab-backup" class="panel">
 
+  <!-- API SETTINGS -->
+  <div class="card">
+    <div class="card-title"><div class="ibadge" style="background:var(--blue-p)">⚙️</div>KI-Einstellungen</div>
+    <div class="ig">
+      <div class="lbl">Cloudflare Worker URL</div>
+      <input type="text" id="apiUrlInput" placeholder="https://dein-worker.workers.dev"
+        style="font-size:13px">
+    </div>
+    <div class="hint">Trage hier die URL deines Cloudflare Workers ein – dann funktioniert die KI-Schätzung über GitHub Pages.</div>
+    <div id="apiStatus" style="margin-bottom:10px"></div>
+    <div class="btn-row">
+      <button class="btn btn-sec" onclick="testApiUrl()">Verbindung testen</button>
+      <button class="btn" onclick="saveApiUrl()">Speichern</button>
+    </div>
+  </div>
+
   <!-- EXPORT -->
   <div class="card">
     <div class="card-title"><div class="ibadge">📤</div>Daten exportieren</div>
@@ -752,6 +768,10 @@ let S={
 try{const sv=_store.get('keto_v4');if(sv)S=JSON.parse(sv);}catch(e){}
 function save(){try{_store.set('keto_v4',JSON.stringify(S));}catch(e){}}
 
+// ============ API PROXY CONFIG ============
+// Muss nach _store stehen damit get() funktioniert
+let API_URL = _store.get('keto_api_url') || 'https://api.anthropic.com/v1/messages';
+
 const TODAY=()=>new Date().toISOString().split('T')[0];
 const fmt=n=>(+n||0).toFixed(0);
 function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2400);}
@@ -772,7 +792,7 @@ function showTab(id,btn){
   if(id==='bewegung'){renderMovement();}
   if(id==='wasser'){renderWaterTab();renderWaterStreaks();}
   if(id==='woche'){renderWeekReview();}
-  if(id==='backup'){updateLastBackupDate();updateDataOverview();}
+  if(id==='backup'){updateLastBackupDate();updateDataOverview();initApiSettings();}
 }
 
 // ============ HEADER ============
@@ -1160,7 +1180,7 @@ async function analyzeWithAI(){
   const tot=getDayTotals(TODAY());
   const prompt=`Analysiere diese Keto-Mahlzeit:\n"${desc}"\n\nBisherige Tagesmakros: Fett ${fmt(tot.fat)}g, Eiweiß ${fmt(tot.prot)}g, KH ${fmt(tot.carb)}g\nZiele: Fett ${TGT.fat}g, Eiweiß max ${TGT.prot}g, KH max 20g\n\nWICHTIG: Prüfe ob Eiweiß das Tagesziel überschreiten würde.\nAntworte NUR mit JSON:\n{"kcal":0,"fat":0,"prot":0,"carb":0,"feedback":"Bewertung auf Deutsch inkl. Eiweiß-Hinweis falls nötig"}`;
   try{
-    const res=await Promise.race([fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,messages:[{role:'user',content:prompt}]})}),new Promise((_,r)=>setTimeout(()=>r(new Error('timeout')),30000))]);
+    const res=await Promise.race([fetch(API_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,messages:[{role:'user',content:prompt}]})}),new Promise((_,r)=>setTimeout(()=>r(new Error('timeout')),30000))]);
     const data=await res.json();
     const parsed=JSON.parse((data.content?.[0]?.text||'{}').replace(/```json|```/g,'').trim());
     document.getElementById('mKcal').value=parsed.kcal||'';document.getElementById('mFat').value=parsed.fat||'';document.getElementById('mProt').value=parsed.prot||'';document.getElementById('mCarb').value=parsed.carb||'';
@@ -1414,7 +1434,7 @@ async function generateWeekReview(){
   }
   const SYS=`Du bist Caros Keto-Coach. Caro: 40 Jahre, Start 76,5 kg, Ziel 62,5 kg. Keto-Ziele: max 20g KH, ${TGT.prot}g Eiweiß, ${TGT.fat}g Fett. Caro neigt zu viel Eiweiß. Bürojob, Spazierengehen. Schreib einen motivierenden Wochenrückblick auf Deutsch: Was lief gut? Was verbessern? Konkrete Tipps für nächste Woche. Max 200 Wörter.`;
   try{
-    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,system:SYS,messages:[{role:'user',content:summary}]})});
+    const res=await fetch(API_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,system:SYS,messages:[{role:'user',content:summary}]})});
     const data=await res.json();
     wrap.innerHTML=`<div class="ai-review"><div class="ai-tag">✦ KI-Wochenanalyse</div><div class="ai-text">${data.content?.[0]?.text||'Keine Antwort.'}</div></div>`;
   }catch(e){wrap.innerHTML='<div class="ai-review"><div class="ai-text">Verbindungsfehler.</div></div>';}
@@ -1429,7 +1449,7 @@ async function askAI(){
   wrap.innerHTML='<div class="ai-bubble"><div class="ai-tag">✦ Denkt nach...</div><div class="ai-text">...</div></div>';
   const tot=getDayTotals(TODAY());
   try{
-    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,system:SYS,messages:[{role:'user',content:`Tagesstand: Fett ${fmt(tot.fat)}g, Eiweiß ${fmt(tot.prot)}g, KH ${fmt(tot.carb)}g, kcal ${fmt(tot.kcal)}, Schritte ${getDaySteps(TODAY())}, Wasser ${getWaterMl(TODAY())}ml.\n\nFrage: ${q}`}]})});
+    const res=await fetch(API_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,system:SYS,messages:[{role:'user',content:`Tagesstand: Fett ${fmt(tot.fat)}g, Eiweiß ${fmt(tot.prot)}g, KH ${fmt(tot.carb)}g, kcal ${fmt(tot.kcal)}, Schritte ${getDaySteps(TODAY())}, Wasser ${getWaterMl(TODAY())}ml.\n\nFrage: ${q}`}]})});
     const data=await res.json();
     wrap.innerHTML=`<div class="ai-bubble"><div class="ai-tag">✦ Antwort</div><div class="ai-text">${data.content?.[0]?.text||'Keine Antwort.'}</div></div>`;
   }catch(e){wrap.innerHTML='<div class="ai-bubble"><div class="ai-text">Verbindungsfehler.</div></div>';}
@@ -1643,7 +1663,7 @@ async function lookupBarcode(barcode) {
   // 2. Fallback: let AI identify it
   resultEl.innerHTML = '<div style="color:#FFD83D;font-size:13px;padding:12px;text-align:center">🤖 KI sucht Produkt...</div>';
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
+    const res = await fetch(API_URL, {
       method: 'POST', headers: {'Content-Type':'application/json'},
       body: JSON.stringify({ model:'claude-sonnet-4-20250514', max_tokens:1000,
         messages:[{role:'user',content:`Barcode: ${barcode}. Welches Lebensmittel ist das (wahrscheinlich deutsch/europäisch)? Schätze Nährwerte pro 100g. Antworte NUR JSON: {"name":"","kcal":0,"fat":0,"prot":0,"carb":0,"portion":100}`}]})
@@ -1810,7 +1830,7 @@ Heutiger Eiweiß-Stand: ${fmt(tot.prot)}g (Ziel: ${TGT.prot}g), KH: ${fmt(tot.ca
 Aktuelle Ernährung: Hauptsächlich Eier, Hackfleisch, Lachs, Frischkäse, Joghurt.`;
 
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
+    const res = await fetch(API_URL, {
       method: 'POST', headers: {'Content-Type':'application/json'},
       body: JSON.stringify({
         model: 'claude-sonnet-4-20250514', max_tokens: 1000,
@@ -2288,6 +2308,71 @@ function renderWaterStreaks() {
   const streak = getWaterStreak();
   renderStreakBadges(streak, 'waterStreakBadges', 'waterStreakFlame');
   renderChallenges(WATER_CHALLENGES, 'waterChallenges');
+}
+
+
+// ============ API URL MANAGEMENT ============
+function saveApiUrl() {
+  const url = document.getElementById('apiUrlInput')?.value?.trim();
+  if (!url) { showToast('Bitte URL eingeben'); return; }
+  if (!url.startsWith('https://')) { showToast('URL muss mit https:// beginnen'); return; }
+  _store.set('keto_api_url', url);
+  // Reload API_URL
+  API_URL = url;
+  showApiStatus('ok', '✓ Gespeichert! KI-Schätzung ist jetzt aktiv.');
+  showToast('✓ Proxy-URL gespeichert');
+}
+
+async function testApiUrl() {
+  const url = document.getElementById('apiUrlInput')?.value?.trim()
+    || _store.get('keto_api_url');
+  if (!url) { showToast('Bitte erst URL eingeben'); return; }
+
+  showApiStatus('loading', '⏳ Verbindung wird getestet...');
+  try {
+    const res = await Promise.race([
+      fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-20250514',
+          max_tokens: 10,
+          messages: [{ role: 'user', content: 'Hi' }]
+        })
+      }),
+      new Promise((_, r) => setTimeout(() => r(new Error('timeout')), 8000))
+    ]);
+    if (res.ok || res.status === 200) {
+      showApiStatus('ok', '✓ Verbindung funktioniert! KI-Schätzung ist aktiv.');
+      _store.set('keto_api_url', url);
+      API_URL = url;
+    } else {
+      showApiStatus('warn', `⚠️ Server antwortet mit Status ${res.status}. URL prüfen.`);
+    }
+  } catch(e) {
+    showApiStatus('bad', `✗ Keine Verbindung: ${e.message}`);
+  }
+}
+
+function showApiStatus(type, msg) {
+  const el = document.getElementById('apiStatus');
+  if (!el) return;
+  const colors = { ok: 'var(--ok-bg)', warn: 'var(--warn-bg)', bad: 'var(--bad-bg)', loading: 'var(--warm)' };
+  const textColors = { ok: 'var(--ok-d)', warn: 'var(--warn)', bad: 'var(--bad)', loading: 'var(--mid)' };
+  el.innerHTML = `<div style="padding:9px 12px;border-radius:9px;font-size:12px;font-weight:500;
+    background:${colors[type]};color:${textColors[type]}">${msg}</div>`;
+}
+
+function initApiSettings() {
+  const saved = _store.get('keto_api_url');
+  const input = document.getElementById('apiUrlInput');
+  if (saved && input) {
+    input.value = saved;
+    window.API_URL = saved;
+    showApiStatus('ok', '✓ Proxy konfiguriert – KI-Funktionen aktiv.');
+  } else {
+    showApiStatus('warn', '⚠️ Noch kein Proxy eingerichtet – KI-Funktionen nicht verfügbar. Cloudflare Worker URL eintragen.');
+  }
 }
 
 // ============ INIT ============
