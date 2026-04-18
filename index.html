@@ -1,0 +1,2329 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Content-Security-Policy" content="default-src * 'self' 'unsafe-inline' 'unsafe-eval' data: blob:;">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Caros Keto Journey</title>
+<!-- System fonts only -->
+<style>
+html,body{width:100%;overflow-x:hidden}
+:root{--tc:#F5C800;--tc-l:#FFD83D;--tc-p:#FFF0A0;--tc-d:#C9A200;--cream:#F5F4F0;--warm:#ECEAE4;--sand:#D8D4CA;--dark:#1C1C2E;--dark2:#252540;--mid:#3D3D5C;--lt:#6E6E90;--ok:#1A9060;--ok-bg:#E6F6EF;--ok-d:#146B48;--warn:#D4800A;--warn-bg:#FEF3E2;--bad:#D94040;--bad-bg:#FDEAEA;--blue:#0099B4;--blue-l:#00B4D8;--blue-p:#E0F7FB;--r-sm:10px;--r-md:14px;--r-lg:18px}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{background:var(--cream);font-family:-apple-system,Roboto,'Helvetica Neue',Arial,sans-serif;color:var(--dark);min-height:100vh;width:100%;max-width:100%;margin:0;overscroll-behavior:none;-webkit-font-smoothing:antialiased;box-sizing:border-box;line-height:1.5}
+
+/* HEADER */
+.hdr{background:var(--dark);padding:22px 18px 0;position:relative;overflow:hidden;width:100%}
+.hdr::before{content:'';position:absolute;top:-40px;right:-40px;width:140px;height:140px;background:var(--tc);border-radius:50%;opacity:.18}
+.hdr-sub{font-style:italic;color:rgba(255,248,214,.8);font-size:11px;letter-spacing:.8px;text-transform:uppercase;margin-bottom:3px}
+.hdr-title{color:#fff;font-size:22px;font-weight:700;line-height:1.15;margin-bottom:16px;letter-spacing:-.2px}
+.hdr-title span{color:var(--tc-l)}
+
+/* CALORIE + WATER ROW */
+.top-stats{background:var(--dark);padding:0 16px 16px;display:flex;align-items:center;gap:12px;width:100%}
+.ring-wrap{position:relative;width:76px;height:76px;flex-shrink:0}
+.ring-wrap svg{transform:rotate(-90deg)}
+.r-bg{fill:none;stroke:rgba(255,255,255,.1);stroke-width:7}
+.r-fill{fill:none;stroke:var(--tc);stroke-width:7;stroke-linecap:round;transition:stroke-dashoffset .8s ease;will-change:stroke-dashoffset}
+.r-fill-blue{fill:none;stroke:var(--blue-l);stroke-width:7;stroke-linecap:round;transition:stroke-dashoffset .8s ease}
+.ring-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.ring-kcal{font-size:15px;font-weight:700;color:#fff;line-height:1}
+.ring-rlbl{font-size:7px;color:#FFE97A;text-transform:uppercase;letter-spacing:.4px;margin-top:2px}
+.ring-rlbl-blue{font-size:7px;color:var(--blue-p);text-transform:uppercase;letter-spacing:.4px;margin-top:2px}
+.cal-stats{flex:1}
+.cstat{margin-bottom:6px}
+.cstat-lbl{font-size:9px;color:var(--lt);text-transform:uppercase;letter-spacing:.6px}
+.cstat-val{font-size:16px;font-weight:500;color:#fff;line-height:1.1}
+.cstat-val .u{font-size:10px;color:var(--lt)}
+.cstat-note{font-size:10px;color:var(--tc-p);margin-top:1px}
+
+/* WATER QUICK BUTTONS */
+.water-quick{background:var(--dark);padding:0 16px 14px;display:flex;gap:6px;align-items:center;width:100%}
+.wbtn{flex:1;background:rgba(0,180,200,.12);border:1px solid rgba(0,180,200,.35);color:#00B4C8;border-radius:9px;padding:9px 4px;font-family:-apple-system,Roboto,'Helvetica Neue',Arial,sans-serif;font-size:12px;font-weight:500;cursor:pointer;text-align:center;transition:all .2s}
+.wbtn:active{background:rgba(91,159,212,.35);transform:scale(.96)}
+.wlbl{font-size:9px;color:var(--lt);white-space:nowrap;flex-shrink:0}
+
+/* MACRO PILLS */
+.macro-summary{background:var(--dark);padding:0 16px 20px;display:flex;gap:8px;width:100%}
+.mpill{flex:1;border-radius:12px;padding:12px 6px;text-align:center;position:relative;overflow:hidden}
+.mpill-val{font-size:17px;font-weight:700;color:#fff;line-height:1;letter-spacing:-.3px}
+.mpill-lbl{font-size:9px;color:rgba(255,255,255,.75);text-transform:uppercase;letter-spacing:.5px;margin-top:4px;font-weight:600}
+.mpill-sub{font-size:9px;color:rgba(255,255,255,.55);margin-top:2px}
+/* Fett = Orange */
+#pill-fat{background:linear-gradient(145deg,#E8855A,#C4622D)}
+/* Eiweiß = Grün */
+#pill-prot{background:linear-gradient(145deg,#3DAD80,#1A8055)}
+/* KH = Navy/Blau – neutral */
+#pill-carb{background:linear-gradient(145deg,#4A6FA5,#2D5080)}
+/* Zustände */
+.mpill.over{box-shadow:0 0 0 2.5px #FF5252 inset}
+.mpill.over .mpill-val{color:#FFD0D0}
+.mpill.ok{box-shadow:0 0 0 2.5px rgba(255,255,255,.35) inset}
+.mpill.ok .mpill-val{color:#fff}
+
+/* TABS */
+.tabs{display:flex;background:#fff;border-bottom:2px solid var(--warm);position:sticky;top:0;z-index:10;overflow-x:auto;width:100%;box-shadow:0 2px 8px rgba(0,0,0,.05)}
+.tabs::-webkit-scrollbar{display:none}
+.tabs{-ms-overflow-style:none;scrollbar-width:none}
+.tab{flex:0 0 auto;padding:14px 13px;border:none;background:transparent;font-size:11px;font-weight:600;color:var(--mid);cursor:pointer;letter-spacing:.4px;transition:all .2s;border-bottom:3px solid transparent;text-transform:uppercase;white-space:nowrap;margin-bottom:-2px}
+.tab.active{color:var(--tc-d);border-bottom-color:var(--tc);background:#fff}
+
+/* PANELS */
+.panel{display:none;padding:14px 14px 90px}
+.panel.active{display:block}
+
+/* CARDS */
+.card{background:#fff;border-radius:16px;padding:16px;margin-bottom:12px;box-shadow:0 1px 3px rgba(0,0,0,.05),0 4px 16px rgba(0,0,0,.05);width:100%;border:1px solid rgba(0,0,0,.04)}
+.card-title{font-size:15px;font-weight:700;color:var(--dark);margin-bottom:14px;display:flex;align-items:center;gap:10px;letter-spacing:-.1px}
+.ibadge{width:32px;height:32px;background:var(--tc-p);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+.ibadge-blue{background:var(--blue-p)}
+
+/* INPUTS */
+.lbl{font-size:11px;color:var(--mid);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;font-weight:600}
+input[type=number],input[type=text],textarea,select{width:100%;padding:10px 12px;border:1.5px solid var(--sand);border-radius:9px;font-family:-apple-system,Roboto,'Helvetica Neue',Arial,sans-serif;font-size:16px;color:var(--dark);background:var(--cream);outline:none;transition:border-color .2s;-webkit-appearance:none}
+input:focus,textarea:focus,select:focus{border-color:var(--tc)}
+textarea{resize:none;font-size:13px;height:68px}
+.ig{margin-bottom:10px}
+.macro-row{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-bottom:10px;width:100%}
+.miwrap{text-align:center}
+.miwrap input{text-align:center;font-size:13px;padding:8px 2px;min-width:0}
+.miunit{font-size:9px;color:var(--lt);margin-top:2px;text-align:center}
+
+/* BUTTONS */
+.btn{background:var(--tc);color:var(--dark);border:none;padding:13px 18px;border-radius:12px;font-size:14px;font-weight:700;cursor:pointer;transition:all .15s;white-space:nowrap;min-height:46px;letter-spacing:-.1px}
+.btn:active{transform:scale(.96);background:var(--tc-d)}
+.btn-full{width:100%;margin-top:10px}
+.btn-row{display:flex;gap:7px;margin-top:9px;width:100%}
+.btn-row .btn{flex:1}
+.btn-sec{background:var(--warm);color:var(--mid);border:1.5px solid var(--sand)}
+.btn-blue{background:var(--blue);color:#fff}
+.btn-blue:active{background:#1a4a70}
+.btn-ok{background:var(--ok)}
+
+/* MACRO BARS */
+.mbar-wrap{margin-bottom:9px}
+.mbar-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:3px}
+.mbar-name{font-size:13px;font-weight:600;color:var(--dark)}
+.mbar-nums{font-size:11px;color:var(--mid);font-weight:500}
+.mbar-track{height:9px;background:var(--sand);border-radius:5px;overflow:hidden}
+.mbar-fill{height:100%;border-radius:4px;transition:width .6s ease}
+.mbar-fill.fat{background:#FFD83D}
+.mbar-fill.prot{background:#5C8A5C}
+.mbar-fill.carb{background:#F5C800}
+.mbar-fill.water{background:#00B4C8}
+.mbar-fill.over{background:#FF5722}
+.mhint{font-size:11px;margin-top:4px;padding:5px 9px;border-radius:7px;line-height:1.45}
+.mhint.ok{background:var(--ok-bg);color:var(--ok-d);font-weight:500}
+.mhint.warn{background:var(--warn-bg);color:var(--warn);font-weight:500}
+.mhint.bad{background:var(--bad-bg);color:var(--bad);font-weight:500}
+
+/* MEAL LOG */
+.meal-item{padding:12px 0;border-bottom:1px solid var(--sand)}
+.meal-item:last-child{border-bottom:none}
+.meal-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:2px}
+.meal-timetag{font-size:10px;text-transform:uppercase;letter-spacing:.6px;color:var(--mid);font-weight:600}
+.meal-kcaltag{font-size:11px;font-weight:600;color:var(--tc)}
+.meal-desc{font-size:14px;color:var(--dark);line-height:1.5;margin-bottom:5px}
+.meal-macros{display:flex;gap:5px;flex-wrap:wrap}
+.mm{font-size:10px;padding:3px 8px;border-radius:10px;background:var(--warm);color:var(--mid);font-weight:500;border:1px solid var(--sand)}
+
+/* WEIGHT LOG */
+.wlog-entry{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--sand)}
+.wlog-entry:last-child{border-bottom:none}
+.wlog-date{font-size:11px;color:var(--dark);font-weight:500;opacity:.6}
+.wlog-w{font-size:16px;font-weight:600;color:var(--dark)}
+.dbadge{font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px}
+.dd{background:var(--ok-bg);color:var(--ok-d)}
+.du{background:var(--bad-bg);color:var(--bad)}
+.ds{background:var(--warm);color:var(--lt)}
+
+/* STEPS */
+.steps-big{display:flex;gap:6px;margin-bottom:10px;width:100%}
+.sbox{flex:1;background:var(--warm);border-radius:12px;padding:12px 6px;text-align:center;min-width:0;border:1px solid var(--sand)}
+.snum{font-size:20px;font-weight:700;color:var(--dark);line-height:1}
+.slbl{font-size:9px;color:var(--mid);text-transform:uppercase;letter-spacing:.4px;margin-top:4px;font-weight:600}
+.sburn{font-size:10px;color:var(--ok);margin-top:2px;font-weight:500}
+
+/* WEEK DOTS */
+.wdots{display:flex;gap:4px;margin-bottom:11px;width:100%}
+.wdot{flex:1;height:34px;border-radius:50%;background:var(--warm);border:2px solid var(--sand);font-size:9px;display:flex;align-items:center;justify-content:center;color:var(--mid);font-weight:600;min-width:0;transition:all .2s}
+.wdot.done{background:var(--tc);border-color:var(--tc);color:var(--dark);font-weight:700}
+.wdot.today{background:var(--tc);border-color:#FFB300;color:var(--dark);font-weight:700}
+
+/* WATER TRACKER */
+.water-glasses{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:12px;width:100%}
+.glass{width:36px;height:46px;border-radius:4px 4px 8px 8px;border:2px solid var(--blue-l);position:relative;overflow:hidden;cursor:pointer;transition:transform .15s;flex-shrink:0}
+.glass:active{transform:scale(.92)}
+.glass-fill{position:absolute;bottom:0;left:0;right:0;background:#00B4C8;opacity:.75;transition:height .3s ease}
+.glass.full .glass-fill{height:100%}
+.glass-icon{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:16px;z-index:2}
+.water-progress{margin-bottom:10px}
+.water-ml{font-size:22px;font-weight:700;color:var(--blue);text-align:center;line-height:1}
+.water-goal-txt{font-size:11px;color:var(--lt);text-align:center;margin-top:2px}
+
+/* FASTING TIMER */
+.fast-display{text-align:center;padding:16px 8px}
+.fast-ring-wrap{position:relative;width:160px;height:160px;margin:0 auto 16px}
+.fast-ring-wrap svg{transform:rotate(-90deg)}
+.fr-bg{fill:none;stroke:#FFF3A3;stroke-width:10}
+.fr-fill{fill:none;stroke:var(--tc);stroke-width:10;stroke-linecap:round;transition:stroke-dashoffset .5s linear}
+.fast-ring-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.fast-time{font-size:34px;font-weight:700;color:var(--dark);line-height:1;letter-spacing:-1px;font-variant-numeric:tabular-nums}
+.fast-sublbl{font-size:11px;color:var(--mid);margin-top:4px;text-transform:uppercase;letter-spacing:.5px;font-weight:600}
+.fast-phase{font-size:13px;color:var(--dark);font-weight:500;margin-bottom:14px;min-height:20px}
+.fast-btn-row{display:flex;gap:10px;justify-content:center}
+.fast-start-btn{background:var(--tc);color:var(--dark);border:none;padding:13px 28px;border-radius:50px;font-family:-apple-system,Roboto,'Helvetica Neue',Arial,sans-serif;font-size:14px;font-weight:600;cursor:pointer;transition:all .2s}
+.fast-start-btn:active{background:var(--dark);transform:scale(.97)}
+.fast-start-btn.running{background:#3D3D6B;color:#fff}
+.fast-info{display:flex;gap:8px;margin-top:14px}
+.finfo-box{flex:1;background:var(--warm);border-radius:10px;padding:10px 8px;text-align:center}
+.finfo-val{font-size:16px;font-weight:700;color:var(--tc)}
+.finfo-lbl{font-size:9px;color:var(--lt);text-transform:uppercase;letter-spacing:.4px;margin-top:2px}
+.fast-select-row{display:flex;gap:6px;margin-bottom:12px;width:100%}
+.fplan-btn{flex:1;padding:9px 4px;border:1.5px solid var(--sand);background:var(--cream);border-radius:9px;font-family:-apple-system,Roboto,'Helvetica Neue',Arial,sans-serif;font-size:12px;color:var(--mid);cursor:pointer;text-align:center;transition:all .2s}
+.fplan-btn.active{border-color:var(--tc);background:var(--tc-p);color:var(--dark);font-weight:600}
+
+/* WEEKLY REVIEW */
+.review-week-sel{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.week-nav{background:none;border:1.5px solid var(--sand);border-radius:8px;padding:7px 12px;font-family:-apple-system,Roboto,'Helvetica Neue',Arial,sans-serif;font-size:13px;color:var(--mid);cursor:pointer}
+.week-label{font-size:14px;font-weight:600;color:var(--dark)}
+.review-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;width:100%}
+.rstat{background:var(--warm);border-radius:12px;padding:14px 10px;text-align:center;border:1px solid var(--sand)}
+.rstat-val{font-size:21px;font-weight:700;color:var(--dark);line-height:1}
+.rstat-lbl{font-size:9px;color:var(--mid);text-transform:uppercase;letter-spacing:.4px;margin-top:4px;font-weight:600}
+.rstat-sub{font-size:10px;color:var(--mid);margin-top:2px}
+.review-days{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-bottom:12px;width:100%}
+.rday{border-radius:8px;padding:7px 3px;text-align:center;background:var(--warm)}
+.rday-lbl{font-size:9px;color:var(--mid);text-transform:uppercase;font-weight:600}
+.rday-w{font-size:11px;font-weight:600;color:var(--dark);margin-top:2px}
+.rday-s{font-size:9px;color:var(--ok);margin-top:1px}
+.rday.best{background:var(--ok-bg);border:1px solid var(--ok)}
+.rday.worst{background:var(--bad-bg);border:1px solid var(--tc)}
+.ai-review{background:linear-gradient(135deg,var(--dark) 0%,#2D2D5E 100%);border-radius:14px;padding:15px;margin-bottom:10px}
+.ai-tag{font-size:9px;text-transform:uppercase;letter-spacing:1.2px;color:#FFE066;margin-bottom:8px;font-weight:700}
+.ai-text{font-size:13px;color:rgba(255,255,255,.9);line-height:1.7;white-space:pre-wrap}
+
+/* AI / TIPS */
+.ai-bubble{background:linear-gradient(160deg,var(--dark) 0%,#282850 100%);border-radius:16px;padding:16px;margin-bottom:12px}
+.quote-card{background:linear-gradient(135deg,#F5C800 0%,#FFB300 100%);border-radius:14px;padding:16px;margin-bottom:11px}
+.qmark{font-family:Georgia,'Times New Roman',serif;font-size:48px;color:rgba(26,26,46,.2);line-height:.7;margin-bottom:5px}
+.qtext{font-style:italic;font-size:15px;color:var(--dark);line-height:1.6;font-weight:500}
+.qday{font-size:10px;color:rgba(26,26,46,.5);margin-top:10px;text-align:right;font-weight:500}
+.hint{font-size:12px;color:var(--dark);line-height:1.6;margin-bottom:10px;padding:9px 12px;background:var(--warm);border-radius:9px;border-left:3px solid var(--tc)}
+.empty{text-align:center;padding:22px 14px;color:var(--mid);font-size:13px;font-style:italic;line-height:1.6}
+.toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(100px);background:var(--dark);color:#fff;padding:12px 24px;border-radius:50px;font-size:13px;font-weight:600;z-index:100;transition:transform .3s cubic-bezier(.34,1.56,.64,1);white-space:nowrap;box-shadow:0 8px 24px rgba(0,0,0,.25)}
+.toast.show{transform:translateX(-50%) translateY(0)}
+@keyframes badgePop{from{transform:scale(.7);opacity:0}to{transform:scale(1);opacity:1}}
+@keyframes waterGoal{0%{stroke:var(--blue-l)}100%{stroke:var(--ok)}}
+
+/* STEPS GOAL RING */
+.goal-ring-wrap{position:relative;width:130px;height:130px;margin:0 auto 12px;flex-shrink:0}
+.goal-ring-wrap svg{transform:rotate(-90deg)}
+.gr-bg{fill:none;stroke:var(--sand);stroke-width:10}
+.gr-fill{fill:none;stroke:var(--tc);stroke-width:10;stroke-linecap:round;transition:stroke-dashoffset .8s ease;will-change:stroke-dashoffset}
+.gr-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+.gr-steps{font-size:24px;font-weight:700;color:var(--dark);line-height:1;letter-spacing:-.5px}
+.gr-goal{font-size:10px;color:var(--mid);text-transform:uppercase;letter-spacing:.5px;margin-top:4px;font-weight:600}
+.gr-pct{font-size:13px;font-weight:700;color:var(--tc-d);margin-top:3px}
+
+/* GOAL SELECTOR */
+.goal-sel{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap}
+.goal-opt{flex:1;min-width:50px;padding:8px 4px;border:1.5px solid var(--sand);background:var(--cream);border-radius:9px;font-family:inherit;font-size:12px;font-weight:500;color:var(--mid);cursor:pointer;text-align:center;transition:all .2s}
+.goal-opt.active{border-color:var(--tc);background:var(--tc);color:var(--dark);font-weight:700}
+
+/* STREAK BADGES */
+.streak-row{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;margin-bottom:4px}
+.streak-row::-webkit-scrollbar{display:none}
+.sbadge{flex-shrink:0;border-radius:12px;padding:10px 12px;text-align:center;min-width:80px;border:2px solid transparent;transition:all .3s}
+.sbadge.locked{background:var(--warm);border-color:var(--sand);opacity:.6}
+.sbadge.earned{background:linear-gradient(135deg,var(--tc),#FFB300);border-color:#FFB300}
+.sbadge.active-next{background:var(--cream);border-color:var(--tc);animation:pulse-border 2s infinite}
+.sbadge-icon{font-size:22px;line-height:1;margin-bottom:4px}
+.sbadge-label{font-size:10px;font-weight:600;color:var(--dark);line-height:1.2}
+.sbadge-sub{font-size:9px;color:var(--lt);margin-top:2px}
+@keyframes pulse-border{0%,100%{border-color:var(--tc)}50%{border-color:var(--tc-l)}}
+
+/* CHALLENGES */
+.challenge-item{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--warm)}
+.challenge-item:last-child{border-bottom:none}
+.ch-icon{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.ch-icon.active{background:var(--tc-p)}
+.ch-icon.done{background:var(--ok-bg)}
+.ch-icon.locked{background:var(--warm);opacity:.5}
+.ch-body{flex:1;min-width:0}
+.ch-name{font-size:13px;font-weight:600;color:var(--dark);margin-bottom:2px}
+.ch-desc{font-size:11px;color:var(--lt);line-height:1.4}
+.ch-prog{height:5px;background:var(--warm);border-radius:3px;margin-top:6px;overflow:hidden}
+.ch-prog-fill{height:100%;background:var(--tc);border-radius:3px;transition:width .5s}
+.ch-badge{font-size:11px;font-weight:600;padding:3px 9px;border-radius:20px;flex-shrink:0}
+.ch-badge.done{background:var(--ok-bg);color:var(--ok)}
+.ch-badge.active{background:var(--tc-p);color:var(--dark)}
+.ch-badge.locked{background:var(--warm);color:var(--lt)}
+
+/* STREAK FLAME */
+.streak-flame{display:flex;align-items:center;gap:6px;background:linear-gradient(135deg,#FF6B35,#F5C800);border-radius:10px;padding:8px 12px;margin-bottom:12px}
+.streak-flame-num{font-size:24px;font-weight:700;color:#fff;line-height:1}
+.streak-flame-lbl{font-size:11px;color:rgba(255,255,255,.85);line-height:1.3}
+
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div class="hdr-sub">Deine persönliche</div>
+  <div class="hdr-title">Keto <span>Journey</span> ✦</div>
+</div>
+
+<!-- CALORIE + WATER RINGS -->
+<div class="top-stats">
+  <div class="ring-wrap">
+    <svg width="76" height="76" viewBox="0 0 76 76">
+      <circle class="r-bg" cx="38" cy="38" r="31"/>
+      <circle class="r-fill" id="calRing" cx="38" cy="38" r="31" stroke-dasharray="194.8" stroke-dashoffset="194.8"/>
+    </svg>
+    <div class="ring-center"><div class="ring-kcal" id="calRemain">1500</div><div class="ring-rlbl">kcal übrig</div></div>
+  </div>
+  <div class="cal-stats">
+    <div class="cstat"><div class="cstat-lbl">Budget heute</div><div class="cstat-val" id="calGoalDisp">1500 <span class="u">kcal</span></div></div>
+    <div class="cstat"><div class="cstat-val" id="calEatenDisp">0 <span class="u">kcal</span> gegessen</div><div class="cstat-note" id="calBurnNote">+ 0 kcal durch Schritte</div></div>
+  </div>
+  <div class="ring-wrap">
+    <svg width="76" height="76" viewBox="0 0 76 76">
+      <circle class="r-bg" cx="38" cy="38" r="31"/>
+      <circle class="r-fill-blue" id="waterRing" cx="38" cy="38" r="31" stroke-dasharray="194.8" stroke-dashoffset="194.8"/>
+    </svg>
+    <div class="ring-center"><div class="ring-kcal" id="waterRemain" style="color:#5B9FD4">0</div><div class="ring-rlbl-blue">/ 8 Gläser</div></div>
+  </div>
+</div>
+
+<!-- WATER QUICK ADD -->
+<div class="water-quick">
+  <span class="wlbl">Wasser:</span>
+  <button class="wbtn" onclick="addWater(150)">☕ 150ml</button>
+  <button class="wbtn" onclick="addWater(250)">🥤 250ml</button>
+  <button class="wbtn" onclick="addWater(500)">💧 500ml</button>
+  <button class="wbtn" onclick="addWater(750)">🍶 750ml</button>
+</div>
+
+<!-- MACRO PILLS -->
+<div class="macro-summary">
+  <!-- FETT: viel = gut ↑ -->
+  <div class="mpill" id="pill-fat">
+    <div style="display:flex;align-items:center;justify-content:center;gap:4px;margin-bottom:1px">
+      <div class="mpill-val" id="pFatV">0g</div>
+      <span id="iconFat" style="font-size:10px;opacity:.8"></span>
+    </div>
+    <div class="mpill-lbl">Fett</div>
+    <div class="mpill-sub" id="pFatS">Ziel 117g</div>
+    <div style="position:relative;margin:7px 6px 0">
+      <div style="height:4px;background:rgba(255,255,255,.15);border-radius:2px">
+        <div id="barFat" style="height:100%;background:rgba(255,255,255,.6);border-radius:2px;width:0%;transition:width .6s ease,background .4s ease"></div>
+      </div>
+      <div style="display:flex;justify-content:space-between;margin-top:3px">
+        <span style="font-size:7px;color:rgba(255,255,255,.4)">0</span>
+        <span style="font-size:7px;color:rgba(255,255,255,.4)">mehr=besser ↑</span>
+      </div>
+    </div>
+  </div>
+  <!-- EIWEIS: viel = aufpassen ↕ -->
+  <div class="mpill" id="pill-prot">
+    <div style="display:flex;align-items:center;justify-content:center;gap:4px;margin-bottom:1px">
+      <div class="mpill-val" id="pProtV">0g</div>
+      <span id="iconProt" style="font-size:10px;opacity:.8"></span>
+    </div>
+    <div class="mpill-lbl">Eiweiß</div>
+    <div class="mpill-sub" id="pProtS">Ziel 94g</div>
+    <div style="position:relative;margin:7px 6px 0">
+      <div style="height:4px;background:rgba(255,255,255,.15);border-radius:2px">
+        <div id="barProt" style="height:100%;background:rgba(255,255,255,.6);border-radius:2px;width:0%;transition:width .6s ease,background .4s ease"></div>
+      </div>
+      <div style="display:flex;justify-content:space-between;margin-top:3px">
+        <span style="font-size:7px;color:rgba(255,255,255,.4)">0</span>
+        <span style="font-size:7px;color:rgba(255,255,255,.4)">nicht zu viel ↕</span>
+      </div>
+    </div>
+  </div>
+  <!-- KH: wenig = gut ↓ -->
+  <div class="mpill" id="pill-carb">
+    <div style="display:flex;align-items:center;justify-content:center;gap:4px;margin-bottom:1px">
+      <div class="mpill-val" id="pCarbV">0g</div>
+      <span id="iconCarb" style="font-size:10px;opacity:.8"></span>
+    </div>
+    <div class="mpill-lbl">Kohlenhydrate</div>
+    <div class="mpill-sub">max 20g</div>
+    <div style="position:relative;margin:7px 6px 0">
+      <div style="height:4px;background:rgba(255,255,255,.15);border-radius:2px">
+        <div id="barCarb" style="height:100%;background:rgba(255,255,255,.6);border-radius:2px;width:0%;transition:width .6s ease,background .4s ease"></div>
+      </div>
+      <div style="display:flex;justify-content:space-between;margin-top:3px">
+        <span style="font-size:7px;color:rgba(255,255,255,.4)">0</span>
+        <span style="font-size:7px;color:rgba(255,255,255,.4)">wenig=besser ↓</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="tabs">
+  <button class="tab active" id="tab-btn-essen" onclick="showTab('essen',this)">Essen</button>
+  <button class="tab" id="tab-btn-wasser" onclick="showTab('wasser',this)">Wasser</button>
+  <button class="tab" id="tab-btn-gewicht" onclick="showTab('gewicht',this)">Gewicht</button>
+  <button class="tab" id="tab-btn-bewegung" onclick="showTab('bewegung',this)">Bewegung</button>
+  <button class="tab" id="tab-btn-fasten" onclick="showTab('fasten',this)">Fasten</button>
+  <button class="tab" id="tab-btn-woche" onclick="showTab('woche',this)">Woche</button>
+  <button class="tab" id="tab-btn-tipps" onclick="showTab('tipps',this)">Tipps</button>
+  <button class="tab" id="tab-btn-backup" onclick="showTab('backup',this)">Backup</button>
+</div>
+
+<!-- ===== ESSEN ===== -->
+<div id="tab-essen" class="panel active">
+  <div class="card">
+    <div class="card-title"><div class="ibadge">🍳</div>Mahlzeit eintragen</div>
+    <div class="ig"><div class="lbl">Wann?</div>
+      <select id="mealTime"><option>Frühstück</option><option>Mittagessen</option><option>Abendessen</option><option>Snack</option></select>
+    </div>
+    <div class="ig"><div class="lbl">Was hast du gegessen?</div>
+      <textarea id="mealDesc" placeholder="z.B. 2 Rühreier mit Speck und Butter, Kaffee mit Sahne"></textarea>
+    </div>
+    <div class="macro-row">
+      <div class="miwrap"><div class="lbl">kcal</div><input type="number" id="mKcal" placeholder="0" min="0"><div class="miunit">kcal</div></div>
+      <div class="miwrap"><div class="lbl">Fett</div><input type="number" id="mFat" placeholder="0" min="0"><div class="miunit">g</div></div>
+      <div class="miwrap"><div class="lbl">Eiweiß</div><input type="number" id="mProt" placeholder="0" min="0"><div class="miunit">g</div></div>
+      <div class="miwrap"><div class="lbl">KH</div><input type="number" id="mCarb" placeholder="0" min="0"><div class="miunit">g</div></div>
+    </div>
+    <div class="hint">Makros unbekannt? Barcode scannen oder KI schätzen lassen!</div>
+    <div class="btn-row">
+      <button class="btn" style="background:#00B4C8;color:#fff;font-size:12px" onclick="openScanner()">📷 Barcode</button>
+      <button class="btn btn-sec" onclick="analyzeWithAI()">🤖 KI schätzen</button>
+      <button class="btn" onclick="addMeal()">Eintragen ✓</button>
+    </div>
+    <div id="aiEstimate" style="display:none;margin-top:10px"></div>
+  </div>
+
+  <!-- BARCODE SCANNER MODAL -->
+  <div id="scannerModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:200;flex-direction:column;align-items:center;justify-content:center">
+    <div style="width:100%;padding:16px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+        <span style="color:#F5C800;font-size:16px;font-weight:700">📷 Barcode scannen</span>
+        <button onclick="closeScanner()" style="background:rgba(255,255,255,.15);border:none;color:#fff;padding:8px 14px;border-radius:8px;font-size:13px;cursor:pointer">✕ Schließen</button>
+      </div>
+      <div style="position:relative;width:100%;aspect-ratio:1;background:#000;border-radius:14px;overflow:hidden;margin-bottom:14px">
+        <video id="scannerVideo" style="width:100%;height:100%;object-fit:cover" playsinline autoplay muted></video>
+        <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none">
+          <div style="width:65%;height:65%;border:3px solid #F5C800;border-radius:12px;position:relative;box-shadow:0 0 0 2000px rgba(0,0,0,.45)">
+            <div style="position:absolute;top:-3px;left:-3px;width:28px;height:28px;border-top:5px solid #F5C800;border-left:5px solid #F5C800;border-radius:3px 0 0 0"></div>
+            <div style="position:absolute;top:-3px;right:-3px;width:28px;height:28px;border-top:5px solid #F5C800;border-right:5px solid #F5C800;border-radius:0 3px 0 0"></div>
+            <div style="position:absolute;bottom:-3px;left:-3px;width:28px;height:28px;border-bottom:5px solid #F5C800;border-left:5px solid #F5C800;border-radius:0 0 0 3px"></div>
+            <div style="position:absolute;bottom:-3px;right:-3px;width:28px;height:28px;border-bottom:5px solid #F5C800;border-right:5px solid #F5C800;border-radius:0 0 3px 0"></div>
+          </div>
+        </div>
+        <canvas id="scannerCanvas" style="display:none"></canvas>
+      </div>
+      <p style="color:rgba(255,255,255,.6);font-size:12px;text-align:center;margin-bottom:14px">Barcode in den gelben Rahmen halten – wird automatisch erkannt</p>
+      <div style="display:flex;gap:8px">
+        <input type="text" id="manualBarcode" placeholder="Barcode manuell eingeben..." style="flex:1;background:rgba(255,255,255,.1);border:1.5px solid rgba(255,255,255,.2);color:#fff;border-radius:9px;padding:10px 12px;font-size:14px">
+        <button onclick="lookupBarcode(document.getElementById('manualBarcode').value)" style="background:#F5C800;color:#1A1A2E;border:none;padding:10px 14px;border-radius:9px;font-weight:700;cursor:pointer;font-size:13px">Suchen</button>
+      </div>
+      <div id="scannerResult" style="margin-top:12px"></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title"><div class="ibadge">📊</div>Makros heute</div>
+    <div id="macroBars"></div>
+    <div id="macroFeedback"></div>
+  </div>
+  <div class="card">
+    <div class="card-title"><div class="ibadge">📋</div>Heute gegessen</div>
+    <div id="mealLog"><div class="empty">Noch nichts eingetragen.</div></div>
+  </div>
+
+  <!-- FOOD STREAK -->
+  <div class="card">
+    <div class="card-title"><div class="ibadge">🔥</div>Ernährungs-Streak</div>
+    <div id="foodStreakFlame"></div>
+    <div class="streak-row" id="foodStreakBadges"></div>
+    <div id="foodChallenges"></div>
+  </div>
+</div>
+
+<!-- ===== WASSER ===== -->
+<div id="tab-wasser" class="panel">
+  <div class="card">
+    <div class="card-title"><div class="ibadge ibadge-blue">💧</div>Wassertrinken heute</div>
+    <div class="water-ml" id="waterMlDisplay">0 ml</div>
+    <div class="water-goal-txt" id="waterGoalTxt">Ziel: 2.000 ml (8 Gläser à 250 ml)</div>
+    <div class="water-progress" style="margin-top:10px">
+      <div class="mbar-track" style="height:10px;border-radius:5px">
+        <div class="mbar-fill water" id="waterBar" style="width:0%"></div>
+      </div>
+    </div>
+    <div class="water-glasses" id="waterGlasses" style="margin-top:14px"></div>
+    <div class="hint">Auf Keto verliert der Körper mehr Wasser – mindestens 2 Liter täglich sind wichtig! Mehr Wasser = weniger Hunger.</div>
+    <div class="btn-row">
+      <button class="btn btn-blue" onclick="addWater(250)">+ 250 ml</button>
+      <button class="btn btn-blue" onclick="addWater(500)">+ 500 ml</button>
+      <button class="btn btn-sec" onclick="resetWater()">Reset</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title"><div class="ibadge ibadge-blue">📅</div>Wasser diese Woche</div>
+    <div id="waterWeekLog"><div class="empty">Noch keine Einträge.</div></div>
+  </div>
+
+  <!-- WATER STREAK -->
+  <div class="card">
+    <div class="card-title"><div class="ibadge">🔥</div>Wasser-Streak</div>
+    <div id="waterStreakFlame"></div>
+    <div class="streak-row" id="waterStreakBadges"></div>
+    <div id="waterChallenges"></div>
+  </div>
+</div>
+
+<!-- ===== GEWICHT ===== -->
+<div id="tab-gewicht" class="panel">
+  <div class="card">
+    <div class="card-title"><div class="ibadge">⚖️</div>Gewicht eintragen</div>
+    <div style="display:flex;gap:10px;align-items:flex-end">
+      <div class="ig" style="flex:1;margin-bottom:0"><div class="lbl">kg (morgens, nüchtern)</div><input type="number" id="weightInput" step="0.1" min="40" max="200" placeholder="z.B. 75.8"></div>
+      <button class="btn" onclick="addWeight()">Eintragen</button>
+    </div>
+  </div>
+  <div class="card" style="background:var(--dark)">
+    <div class="card-title" style="color:#fff"><div class="ibadge">🎯</div><span style="color:#fff">Fortschritt</span></div>
+    <div style="display:flex;align-items:center;gap:14px;margin-bottom:14px">
+      <div class="ring-wrap" style="width:80px;height:80px">
+        <svg width="80" height="80" viewBox="0 0 80 80">
+          <circle class="r-bg" cx="40" cy="40" r="33"/>
+          <circle class="r-fill" id="wRing" cx="40" cy="40" r="33" stroke-dasharray="207.3" stroke-dashoffset="207.3"/>
+        </svg>
+        <div class="ring-center"><div class="ring-kcal" id="wPct">0%</div><div class="ring-rlbl">Ziel</div></div>
+      </div>
+      <div>
+        <div class="cstat"><div class="cstat-lbl">Start</div><div class="cstat-val">76,5 <span class="u">kg</span></div></div>
+        <div class="cstat"><div class="cstat-lbl">Aktuell</div><div class="cstat-val" id="wCurrD">76,5 <span class="u">kg</span></div></div>
+        <div class="cstat-note" id="wRemain" style="color:var(--tc-p)">Noch 14,0 kg bis Ziel</div>
+      </div>
+    </div>
+    <canvas id="weightChart" height="110" style="width:100%"></canvas>
+  </div>
+  <div class="card">
+    <div class="card-title"><div class="ibadge">📅</div>Verlauf</div>
+    <div id="weightLog"><div class="empty">Noch keine Einträge.</div></div>
+  </div>
+
+  <!-- PLATEAU CARD -->
+  <div id="plateauCard" style="display:none"></div>
+</div>
+
+<!-- ===== BEWEGUNG ===== -->
+<div id="tab-bewegung" class="panel">
+
+  <!-- GOAL RING CARD -->
+  <div class="card" style="text-align:center">
+    <div class="card-title" style="justify-content:center"><div class="ibadge">👟</div>Schritte heute</div>
+    <div class="goal-ring-wrap">
+      <svg width="130" height="130" viewBox="0 0 130 130">
+        <circle class="gr-bg" cx="65" cy="65" r="55"/>
+        <circle class="gr-fill" id="stepsRing" cx="65" cy="65" r="55" stroke-dasharray="345.4" stroke-dashoffset="345.4"/>
+      </svg>
+      <div class="gr-center">
+        <div class="gr-steps" id="stepsD">0</div>
+        <div class="gr-goal" id="stepsGoalLbl">von 7.000</div>
+        <div class="gr-pct" id="stepsPct">0%</div>
+      </div>
+    </div>
+    <div class="goal-sel" id="goalSelector">
+      <button class="goal-opt" onclick="setStepsGoal(5000,this)">5.000</button>
+      <button class="goal-opt active" onclick="setStepsGoal(7000,this)">7.000</button>
+      <button class="goal-opt" onclick="setStepsGoal(8000,this)">8.000</button>
+      <button class="goal-opt" onclick="setStepsGoal(10000,this)">10.000</button>
+      <button class="goal-opt" onclick="setStepsGoal(12000,this)">12.000</button>
+    </div>
+    <div style="display:flex;gap:8px;align-items:center;margin-bottom:8px">
+      <input type="number" id="stepsInput" placeholder="Schritte eingeben..." min="0"
+        style="flex:1;font-size:16px">
+      <button class="btn" onclick="addSteps()" style="padding:12px 18px">OK</button>
+    </div>
+    <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
+      <span class="dbadge ds" id="kmBadge">0,0 km</span>
+      <span class="dbadge ds" id="burnBadge">0 kcal</span>
+      <span class="dbadge" id="burnNote" style="background:var(--warm);color:var(--lt)"></span>
+    </div>
+  </div>
+
+  <!-- STREAK BADGES -->
+  <div class="card">
+    <div class="card-title"><div class="ibadge">🔥</div>Schritt-Streaks</div>
+    <div id="stepsStreakFlame"></div>
+    <div class="streak-row" id="stepsStreakBadges"></div>
+    <div class="hint" style="margin-top:4px">Erreiche dein Tagesziel X Tage hintereinander – die Zählung läuft fortlaufend ab dem ersten Tag.</div>
+  </div>
+
+  <!-- CHALLENGES -->
+  <div class="card">
+    <div class="card-title"><div class="ibadge">🏆</div>Challenges</div>
+    <div id="stepsChallenges"></div>
+  </div>
+
+  <!-- WEEK VIEW -->
+  <div class="card">
+    <div class="card-title"><div class="ibadge">🗓️</div>Diese Woche</div>
+    <div class="wdots" id="weekDots"></div>
+    <div id="actLog"><div class="empty">Keine Einträge.</div></div>
+  </div>
+</div>
+
+<!-- ===== FASTEN ===== -->
+<div id="tab-fasten" class="panel">
+  <div class="card">
+    <div class="card-title"><div class="ibadge">⏱️</div>Intervallfasten</div>
+    <div class="fast-select-row">
+      <button class="fplan-btn active" id="fplan-16" onclick="setFastPlan(16,8,this)">16:8</button>
+      <button class="fplan-btn" id="fplan-18" onclick="setFastPlan(18,6,this)">18:6</button>
+      <button class="fplan-btn" id="fplan-20" onclick="setFastPlan(20,4,this)">20:4</button>
+      <button class="fplan-btn" id="fplan-24" onclick="setFastPlan(24,0,this)">24h</button>
+    </div>
+    <div class="fast-display">
+      <div class="fast-ring-wrap">
+        <svg width="160" height="160" viewBox="0 0 160 160">
+          <circle class="fr-bg" cx="80" cy="80" r="68"/>
+          <circle class="fr-fill" id="fastRing" cx="80" cy="80" r="68" stroke-dasharray="427.3" stroke-dashoffset="427.3"/>
+        </svg>
+        <div class="fast-ring-center">
+          <div class="fast-time" id="fastTime">00:00:00</div>
+          <div class="fast-sublbl" id="fastSubLbl">bereit</div>
+        </div>
+      </div>
+      <div class="fast-phase" id="fastPhase"></div>
+      <div class="fast-btn-row">
+        <button class="fast-start-btn" id="fastBtn" onclick="toggleFast()">Fasten starten</button>
+      </div>
+      <div class="fast-info">
+        <div class="finfo-box"><div class="finfo-val" id="fastGoalH">16h</div><div class="finfo-lbl">Fastenzeit</div></div>
+        <div class="finfo-box"><div class="finfo-val" id="fastEatH">8h</div><div class="finfo-lbl">Essensfenster</div></div>
+        <div class="finfo-box"><div class="finfo-val" id="fastEndAt">–</div><div class="finfo-lbl">Fertig um</div></div>
+      </div>
+    </div>
+    <div class="hint">Intervallfasten + Keto = maximale Fettverbrennung. Starte mit 16:8 – das ist gut verträglich und effektiv.</div>
+  </div>
+  <div class="card">
+    <div class="card-title"><div class="ibadge">📖</div>Fasten-Phasen</div>
+    <div style="font-size:12px;color:var(--mid);line-height:1.7">
+      <b>0–4h:</b> Verdauung, Blutzucker sinkt<br>
+      <b>4–8h:</b> Glykogen wird verbraucht, Ketose beginnt<br>
+      <b>8–12h:</b> Tiefe Ketose, Fettverbrennung läuft<br>
+      <b>12–16h:</b> Autophagie beginnt, Zellreinigung<br>
+      <b>16–24h:</b> Maximale Autophagie und Fettverbrennung
+    </div>
+  </div>
+</div>
+
+<!-- ===== WOCHENRÜCKBLICK ===== -->
+<div id="tab-woche" class="panel">
+  <div class="card">
+    <div class="card-title"><div class="ibadge">📊</div>Wochenrückblick</div>
+    <div class="review-week-sel">
+      <button class="week-nav" onclick="changeReviewWeek(-1)">← zurück</button>
+      <span class="week-label" id="weekLabel">Diese Woche</span>
+      <button class="week-nav" onclick="changeReviewWeek(1)">vor →</button>
+    </div>
+    <div class="review-days" id="reviewDays"></div>
+    <div class="review-grid" id="reviewGrid"></div>
+    <div id="aiReviewWrap">
+      <button class="btn btn-full btn-sec" onclick="generateWeekReview()">🤖 KI-Analyse erstellen</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- ===== BACKUP ===== -->
+<div id="tab-backup" class="panel">
+
+  <!-- EXPORT -->
+  <div class="card">
+    <div class="card-title"><div class="ibadge">📤</div>Daten exportieren</div>
+    <p style="font-size:13px;color:var(--lt);line-height:1.6;margin-bottom:14px">
+      Speichere alle deine Daten als Datei – Gewicht, Mahlzeiten, Schritte, Wasser, Fasten-History. Die Datei kannst du in Google Drive, iCloud oder per WhatsApp sichern.
+    </p>
+    <div style="background:var(--warm);border-radius:10px;padding:12px;margin-bottom:14px;font-size:12px;color:var(--mid);line-height:1.6">
+      📦 Enthält: <b>alle Gewichtseinträge · Mahlzeiten · Schritte · Wasserdaten · Fastenzeiten</b>
+    </div>
+    <button class="btn btn-full" onclick="exportData()" style="font-size:14px;padding:14px">
+      📥 Backup herunterladen
+    </button>
+    <div id="exportStatus" style="margin-top:10px"></div>
+  </div>
+
+  <!-- IMPORT -->
+  <div class="card">
+    <div class="card-title"><div class="ibadge">📥</div>Daten importieren</div>
+    <p style="font-size:13px;color:var(--lt);line-height:1.6;margin-bottom:14px">
+      Lade ein gespeichertes Backup wieder ein – z.B. nach einem Handywechsel oder Neuinstallation.
+    </p>
+    <div style="background:var(--bad-bg);border-radius:10px;padding:10px 12px;margin-bottom:14px;font-size:12px;color:var(--bad);line-height:1.5">
+      ⚠️ Beim Importieren werden die aktuellen Daten auf dem Gerät überschrieben.
+    </div>
+    <label style="display:block;width:100%;background:var(--mid);color:#fff;border:none;padding:13px;border-radius:9px;font-family:-apple-system,Roboto,'Helvetica Neue',Arial,sans-serif;font-size:14px;font-weight:600;cursor:pointer;text-align:center">
+      📂 Backup-Datei auswählen
+      <input type="file" id="importFile" accept=".json" style="display:none" onchange="importData(this)">
+    </label>
+    <div id="importStatus" style="margin-top:10px"></div>
+  </div>
+
+  <!-- AUTO-BACKUP REMINDER -->
+  <div class="card">
+    <div class="card-title"><div class="ibadge">🔔</div>Backup-Empfehlung</div>
+    <div style="font-size:13px;color:var(--mid);line-height:1.7">
+      <div style="margin-bottom:8px">📅 <b>Wöchentlich</b> ein Backup machen – am besten jeden Freitagabend wenn du dein Gewicht einträgst.</div>
+      <div style="margin-bottom:8px">☁️ Backup-Datei direkt in <b>Google Drive</b> oder <b>WhatsApp an dich selbst</b> schicken.</div>
+      <div>📱 Beim <b>Handywechsel</b>: App öffnen → Backup exportieren → auf neuem Handy importieren. Fertig.</div>
+    </div>
+    <div style="margin-top:14px;background:var(--warm);border-radius:10px;padding:12px">
+      <div style="font-size:11px;color:var(--lt);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">Letztes Backup</div>
+      <div style="font-size:14px;font-weight:600;color:var(--dark)" id="lastBackupDate">Noch kein Backup erstellt</div>
+    </div>
+  </div>
+
+  <!-- DATA OVERVIEW -->
+  <div class="card">
+    <div class="card-title"><div class="ibadge">📊</div>Gespeicherte Daten</div>
+    <div id="dataOverview"></div>
+  </div>
+
+</div>
+
+<!-- ===== TIPPS ===== -->
+<div id="tab-tipps" class="panel">
+  <div class="quote-card"><div class="qmark">"</div><div class="qtext" id="dailyQuote">Lade...</div><div class="qday" id="quoteDay"></div></div>
+  <div class="card">
+    <div class="card-title"><div class="ibadge">🤖</div>Frag mich</div>
+    <div class="hint">Frag nach Rezepten, Keto-Wissen, oder wie du heute deinen Tag optimieren kannst.</div>
+    <div class="ig"><textarea id="questionInput" placeholder="z.B. Was esse ich heute Abend? Wie überstehe ich die Keto-Grippe?"></textarea></div>
+    <button class="btn btn-full" onclick="askAI()">Fragen →</button>
+    <div id="aiAnswer" style="display:none;margin-top:11px"></div>
+  </div>
+  <div class="card">
+    <div class="card-title"><div class="ibadge">💡</div>Tipp des Tages</div>
+    <div id="dailyTip"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ============ SAFE STORAGE WRAPPER ============
+// Handles environments where localStorage may be restricted
+const _store = (() => {
+  const mem = {};
+  try {
+    localStorage.setItem('_test', '1');
+    localStorage.removeItem('_test');
+    return {
+      get: k => { try { return localStorage.getItem(k); } catch(e) { return mem[k]||null; } },
+      set: (k,v) => { try { localStorage.setItem(k,v); } catch(e) { mem[k]=v; } },
+      remove: k => { try { localStorage.removeItem(k); } catch(e) { delete mem[k]; } }
+    };
+  } catch(e) {
+    console.warn('localStorage unavailable, using memory storage');
+    return {
+      get: k => mem[k]||null,
+      set: (k,v) => { mem[k]=v; },
+      remove: k => { delete mem[k]; }
+    };
+  }
+})();
+
+// ============ CONSTANTS ============
+const START_W=76.5, GOAL_W=62.5;
+const TGT={kcal:1500,fat:117,prot:94,carb:20,water:2000};
+const WATER_GOAL_ML=2000;
+const GLASS_ML=250;
+const GLASSES_COUNT=8;
+
+// ============ STATE ============
+let S={
+  weights:[{date:'17.04.2025',iso:'2025-04-17',value:76.5}],
+  meals:[],
+  steps:[],
+  water:{},      // {iso: ml}
+  currentWeight:76.5,
+  fast:{active:false,startTs:null,planH:16,planEatH:8}
+};
+try{const sv=_store.get('keto_v4');if(sv)S=JSON.parse(sv);}catch(e){}
+function save(){try{_store.set('keto_v4',JSON.stringify(S));}catch(e){}}
+
+const TODAY=()=>new Date().toISOString().split('T')[0];
+const fmt=n=>(+n||0).toFixed(0);
+function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2400);}
+function isoToDisplay(iso){const p=iso.split('-');return p[2]+'.'+p[1]+'.'+p[0];}
+
+// ============ TABS ============
+function showTab(id,btn){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
+  const panel=document.getElementById('tab-'+id);
+  if(panel) panel.classList.add('active');
+  // btn may be the element itself or we find it by ID
+  const activeBtn = (btn && btn.classList) ? btn : document.getElementById('tab-btn-'+id);
+  if(activeBtn) activeBtn.classList.add('active');
+  try{window.scrollTo({top:0,behavior:'smooth'});}catch(e){}
+  if(id==='essen'){renderMeals();renderMacroBars();renderFoodStreaks();}
+  if(id==='gewicht'){renderWeightLog();}
+  if(id==='bewegung'){renderMovement();}
+  if(id==='wasser'){renderWaterTab();renderWaterStreaks();}
+  if(id==='woche'){renderWeekReview();}
+  if(id==='backup'){updateLastBackupDate();updateDataOverview();}
+}
+
+// ============ HEADER ============
+function updateHeader(){
+  const tot=getDayTotals(TODAY());
+  const burned=stepsToCal(getDaySteps(TODAY()));
+  const budget=TGT.kcal+burned;
+  const remain=Math.max(0,budget-tot.kcal);
+  const pct=Math.min(100,(tot.kcal/budget)*100);
+  const circ=194.8;
+  document.getElementById('calRing').style.strokeDashoffset=circ-(pct/100)*circ;
+  document.getElementById('calRemain').textContent=remain;
+  document.getElementById('calGoalDisp').innerHTML=`${budget} <span class="u">kcal</span>`;
+  document.getElementById('calEatenDisp').innerHTML=`${fmt(tot.kcal)} <span class="u">kcal</span> gegessen`;
+  document.getElementById('calBurnNote').textContent=`+ ${burned} kcal durch Schritte`;
+  // water ring
+  const wml=getWaterMl(TODAY());
+  const wpct=Math.min(100,(wml/WATER_GOAL_ML)*100);
+  const waterGoalDone = wml >= WATER_GOAL_ML;
+  const wring = document.getElementById('waterRing');
+  if(wring){
+    wring.style.strokeDashoffset=circ-(wpct/100)*circ;
+    wring.style.stroke = waterGoalDone ? 'var(--ok)' : 'var(--blue-l)';
+  }
+  const glasses=Math.floor(wml/GLASS_ML);
+  const waterRemEl = document.getElementById('waterRemain');
+  if(waterRemEl){
+    waterRemEl.textContent = waterGoalDone ? '✓' : glasses;
+    waterRemEl.style.color = waterGoalDone ? '#81C784' : '';
+  }
+  // pills
+  function pill(id,val,tgt,vId,sId,sTxt,barId){
+    const el=document.getElementById(vId);
+    if(el) el.textContent=fmt(val)+'g';
+    if(sId){const s=document.getElementById(sId);if(s)s.textContent=sTxt;}
+    const p=(val/tgt)*100;
+    const pill=document.getElementById(id);
+    if(pill) pill.className='mpill'+(p>115?' over':p>=75?' ok':'');
+    if(barId){const b=document.getElementById(barId);if(b){
+      b.style.width=Math.min(100,p)+'%';
+      b.style.background = p>100 ? '#FF6B6B' : p>=80 ? '#69E0A0' : p>=50 ? '#FFD83D' : 'rgba(255,255,255,.35)';
+    }}
+    // Icon: Fett & Eiweiß – viel=gut bis Ziel, dann Warnung
+    const iconEl=barId?document.getElementById(barId.replace('bar','icon')):null;
+    if(iconEl){
+      if(p>115) iconEl.textContent='⚠';
+      else if(p>=80) iconEl.textContent='✓';
+      else if(p>=50) iconEl.textContent='→';
+      else iconEl.textContent='';
+    }
+  }
+  pill('pill-fat',tot.fat,TGT.fat,'pFatV','pFatS','Ziel '+TGT.fat+'g','barFat');
+  pill('pill-prot',tot.prot,TGT.prot,'pProtV','pProtS','Ziel '+TGT.prot+'g','barProt');
+  const cp=(tot.carb/TGT.carb)*100;
+  const carbEl=document.getElementById('pCarbV');
+  if(carbEl) carbEl.textContent=fmt(tot.carb)+'g';
+  const carbPill=document.getElementById('pill-carb');
+  if(carbPill) carbPill.className='mpill'+(cp>100?' over':cp>=75?' ok':'');
+  const carbBar=document.getElementById('barCarb');
+  if(carbBar){
+    carbBar.style.width=Math.min(100,cp)+'%';
+    carbBar.style.background = cp>100 ? '#FF4444' : cp>=80 ? '#FF9944' : cp>=50 ? '#FFD83D' : '#69E0A0';
+  }
+  const iconCarb=document.getElementById('iconCarb');
+  if(iconCarb){
+    if(cp>100) iconCarb.textContent='⛔';
+    else if(cp>=80) iconCarb.textContent='⚠';
+    else if(cp>=50) iconCarb.textContent='→';
+    else iconCarb.textContent='✓';
+  }
+}
+
+// ============ WATER ============
+function getWaterMl(date){return S.water[date]||0;}
+function addWater(ml){
+  const t=TODAY();
+  S.water[t]=(S.water[t]||0)+ml;
+  save();updateHeader();renderWaterStreaks();
+  if(document.getElementById('tab-wasser').classList.contains('active'))renderWaterTab();
+  showToast(`💧 +${ml}ml Wasser`);
+}
+function resetWater(){S.water[TODAY()]=0;save();updateHeader();renderWaterTab();showToast('Wasser zurückgesetzt');}
+function renderWaterTab(){
+  const today=TODAY();
+  const ml=getWaterMl(today);
+  const goalReached = ml >= WATER_GOAL_ML;
+
+  // Zahl & Farbe
+  const mlDisp = document.getElementById('waterMlDisplay');
+  if(mlDisp){
+    mlDisp.textContent=ml.toLocaleString('de-DE')+' ml';
+    mlDisp.style.color = goalReached ? 'var(--ok)' : 'var(--blue)';
+  }
+
+  const pct=Math.min(100,(ml/WATER_GOAL_ML)*100);
+  const bar = document.getElementById('waterBar');
+  if(bar){
+    bar.style.width=pct+'%';
+    bar.style.background = goalReached ? 'var(--ok)' : 'var(--blue-l)';
+  }
+
+  const glasses=Math.floor(ml/GLASS_ML);
+  const goalTxt = document.getElementById('waterGoalTxt');
+  if(goalTxt){
+    goalTxt.textContent = goalReached
+      ? `Tagesziel erreicht! ${glasses} Glaeser`
+      : `${glasses} von ${GLASSES_COUNT} Glaeser (Ziel: ${WATER_GOAL_ML}ml)`;
+    goalTxt.style.color = goalReached ? 'var(--ok-d)' : '';
+    goalTxt.style.fontWeight = goalReached ? '600' : '';
+  }
+
+  // Badge wenn Ziel erreicht
+  let badge = document.getElementById('waterGoalBadge');
+  if(goalReached){
+    if(!badge){
+      badge = document.createElement('div');
+      badge.id = 'waterGoalBadge';
+      badge.style.cssText = 'display:flex;align-items:center;gap:10px;background:var(--ok-bg);border:1.5px solid var(--ok);border-radius:14px;padding:12px 14px;margin:12px 0;animation:badgePop .4s cubic-bezier(.34,1.56,.64,1)';
+      badge.innerHTML = `
+        <div style="font-size:28px;line-height:1">🎉</div>
+        <div>
+          <div style="font-size:14px;font-weight:700;color:var(--ok-d)">Tagesziel erreicht!</div>
+          <div style="font-size:11px;color:var(--ok);margin-top:2px">${ml.toLocaleString('de-DE')} ml – gut hydriert fuer Keto</div>
+        </div>`;
+      // Insert after waterGoalTxt
+      const parent = goalTxt ? goalTxt.parentElement : null;
+      if(parent) parent.insertBefore(badge, goalTxt.nextSibling);
+    }
+  } else {
+    if(badge) badge.remove();
+  }
+  // glasses icons
+  let gh='';
+  for(let i=0;i<GLASSES_COUNT;i++){
+    const full=i<glasses;
+    gh+=`<div class="glass ${full?'full':''}" onclick="addWater(250)">
+      <div class="glass-fill" style="height:${full?100:0}%"></div>
+      <div class="glass-icon">${full?'💧':'🫙'}</div>
+    </div>`;
+  }
+  document.getElementById('waterGlasses').innerHTML=gh;
+  // week log
+  const now=new Date();const dow=(now.getDay()+6)%7;
+  const days=['Mo','Di','Mi','Do','Fr','Sa','So'];
+  let wl='';
+  for(let i=6;i>=0;i--){
+    const d=new Date(now);d.setDate(now.getDate()-i);
+    const iso=d.toISOString().split('T')[0];
+    const wml=getWaterMl(iso);
+    const wpct=Math.min(100,(wml/WATER_GOAL_ML)*100);
+    const cls=wml>=WATER_GOAL_ML?'dd':wml>0?'ds':'';
+    if(wml>0)wl+=`<div class="wlog-entry"><div><div class="wlog-date">${isoToDisplay(iso)}</div><div class="wlog-w">${wml.toLocaleString('de-DE')} ml</div></div><span class="dbadge ${cls}">${wml>=WATER_GOAL_ML?'✓ Ziel':''+Math.round(wpct)+'%'}</span></div>`;
+  }
+  document.getElementById('waterWeekLog').innerHTML=wl||'<div class="empty">Noch keine Einträge.</div>';
+}
+
+// ============ MEALS ============
+function getDayTotals(date){return S.meals.filter(m=>m.date===date).reduce((a,m)=>({kcal:a.kcal+(+m.kcal||0),fat:a.fat+(+m.fat||0),prot:a.prot+(+m.prot||0),carb:a.carb+(+m.carb||0)}),{kcal:0,fat:0,prot:0,carb:0});}
+function getDaySteps(date){const e=S.steps.find(s=>s.date===date);return e?e.steps:0;}
+function stepsToCal(steps){return Math.round(steps*0.04);}
+
+function renderMacroBars(){
+  const tot=getDayTotals(TODAY());
+  function bar(lbl,val,tgt,cls){const p=Math.min(110,(val/tgt)*100);const over=p>100;return`<div class="mbar-wrap"><div class="mbar-head"><span class="mbar-name">${lbl}</span><span class="mbar-nums">${fmt(val)}g / ${tgt}g</span></div><div class="mbar-track"><div class="mbar-fill ${cls}${over?' over':''}" style="width:${Math.min(100,p)}%"></div></div></div>`;}
+  document.getElementById('macroBars').innerHTML=bar('Fett',tot.fat,TGT.fat,'fat')+bar('Eiweiß',tot.prot,TGT.prot,'prot')+bar('Kohlenhydrate',tot.carb,TGT.carb,'carb');
+  let hints=[];
+  if(tot.carb>20)hints.push(`<div class="mhint bad">⚠️ KH über 20g (${fmt(tot.carb)}g) – Ketose könnte unterbrochen werden.</div>`);
+  else if(tot.carb>=15)hints.push(`<div class="mhint warn">🔸 KH bei ${fmt(tot.carb)}g – heute abends kein Joghurt mehr.</div>`);
+  else if(tot.carb>0)hints.push(`<div class="mhint ok">✓ Kohlenhydrate gut (${fmt(tot.carb)}g von max. 20g)</div>`);
+  if(tot.prot>TGT.prot*1.15)hints.push(`<div class="mhint bad">⚠️ Eiweiß zu hoch! ${fmt(tot.prot)}g statt ${TGT.prot}g – heute Abend Sahne, Butter, Käse statt Hackfleisch.</div>`);
+  else if(tot.prot>TGT.prot*0.8)hints.push(`<div class="mhint ok">✓ Eiweiß im Zielbereich (${fmt(tot.prot)}g)</div>`);
+  else if(tot.prot>0)hints.push(`<div class="mhint warn">🔸 Eiweiß noch niedrig – Eier oder Lachs würden passen.</div>`);
+  if(tot.fat<TGT.fat*0.5&&tot.kcal>300)hints.push(`<div class="mhint warn">🔸 Fett noch niedrig – Butter oder Olivenöl ergänzen!</div>`);
+  document.getElementById('macroFeedback').innerHTML=hints.join('');
+}
+
+
+// ============ SMART INPUT VALIDATION ============
+
+// Patterns that suggest missing portion info
+const NEEDS_PORTION = /^(ein|eine|etwas|bisschen|paar|halbe?|viel|wenig|\d+\s*(stück|stk|scheibe|scheiben|tasse|tassen|glas|becher|portion|portionen|hand|handvoll))/i;
+const HAS_AMOUNT = /\d+\s*(g|gr|gramm|kg|ml|l|liter|cl|oz|lb|stk|stück|scheibe|scheiben|tasse|tassen|becher|portion|el|tl|esslöffel|teelöffel)/i;
+const VAGUE_FOODS = /^(salat|suppe|pizza|pasta|reis|brot|fleisch|fisch|gemüse|obst|joghurt|käse|ei|eier|nüsse|snack|essen|mittagessen|abendessen|frühstück)$/i;
+
+// Check if meal description needs clarification
+async function validateMealInput(desc, kcal, fat, prot, carb) {
+  const issues = [];
+
+  // No macros entered AND description is vague
+  const noMacros = !kcal && !fat && !prot && !carb;
+  const words = desc.trim().split(/\s+/);
+  const isVague = words.length <= 2;
+  const missingPortion = !HAS_AMOUNT.test(desc) && isVague;
+
+  if (noMacros && missingPortion) {
+    issues.push('portion');
+  }
+
+  // Check for just a number with no unit (e.g. "Hackfleisch 150" - no g)
+  if (/\d+(?!\s*(g|gr|gramm|kg|ml|l|cl|stk|scheibe|portion|tasse))/i.test(desc) && !HAS_AMOUNT.test(desc)) {
+    issues.push('unit');
+  }
+
+  return issues;
+}
+
+// Show a friendly follow-up dialog
+function showFollowUpDialog(desc, issues, onConfirm) {
+  // Remove any existing dialog
+  const existing = document.getElementById('followUpDialog');
+  if (existing) existing.remove();
+
+  const dialog = document.createElement('div');
+  dialog.id = 'followUpDialog';
+  dialog.style.cssText = `
+    position:fixed;bottom:0;left:0;right:0;z-index:500;
+    background:var(--dark);border-radius:20px 20px 0 0;
+    padding:20px;box-shadow:0 -8px 40px rgba(0,0,0,.4);
+    max-width:430px;margin:0 auto;
+    animation:slideUp .25s ease;
+  `;
+
+  // Build questions based on issues
+  let questionHTML = '';
+  let inputHTML = '';
+
+  if (issues.includes('portion') || issues.includes('unit')) {
+    questionHTML = `
+      <div style="font-size:13px;color:rgba(255,255,255,.6);margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px;font-size:10px">Kurze Rückfrage</div>
+      <div style="font-size:16px;font-weight:600;color:#fff;margin-bottom:6px">Wie viel von „${desc}"?</div>
+      <div style="font-size:13px;color:rgba(255,255,255,.55);margin-bottom:16px">Mit Mengenangabe kann ich die Kalorien und Makros viel genauer schätzen.</div>
+    `;
+    inputHTML = `
+      <div style="display:flex;gap:8px;margin-bottom:12px">
+        <input type="number" id="followUpGrams" placeholder="Menge" min="1" max="5000"
+          style="flex:1;background:rgba(255,255,255,.1);border:1.5px solid rgba(245,200,0,.4);
+          color:#fff;border-radius:9px;padding:10px 12px;font-size:16px;text-align:center">
+        <select id="followUpUnit"
+          style="background:rgba(255,255,255,.1);border:1.5px solid rgba(255,255,255,.2);
+          color:#fff;border-radius:9px;padding:10px 8px;font-size:14px;-webkit-appearance:none">
+          <option value="g">g</option>
+          <option value="ml">ml</option>
+          <option value="Stück">Stück</option>
+          <option value="Scheibe">Scheibe(n)</option>
+          <option value="Tasse">Tasse(n)</option>
+          <option value="Portion">Portion(en)</option>
+          <option value="EL">EL</option>
+          <option value="TL">TL</option>
+        </select>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px">
+        ${[50,100,150,200,250,300].map(g=>`
+          <button onclick="document.getElementById('followUpGrams').value=${g};document.getElementById('followUpUnit').value='g'"
+            style="background:rgba(255,255,255,.1);border:none;color:rgba(255,255,255,.7);
+            padding:6px 12px;border-radius:7px;font-size:12px;cursor:pointer">${g}g</button>
+        `).join('')}
+      </div>
+    `;
+  }
+
+  dialog.innerHTML = `
+    <style>
+      @keyframes slideUp { from { transform:translateY(100%); } to { transform:translateY(0); } }
+    </style>
+    <div style="width:36px;height:4px;background:rgba(255,255,255,.2);border-radius:2px;margin:0 auto 16px"></div>
+    ${questionHTML}
+    ${inputHTML}
+    <div style="display:flex;gap:8px">
+      <button onclick="dismissFollowUp()"
+        style="flex:1;background:rgba(255,255,255,.1);color:rgba(255,255,255,.7);border:none;
+        padding:12px;border-radius:9px;font-size:13px;cursor:pointer">
+        Trotzdem so eintragen
+      </button>
+      <button onclick="confirmFollowUp()"
+        style="flex:2;background:#F5C800;color:#1A1A2E;border:none;
+        padding:12px;border-radius:9px;font-size:14px;font-weight:700;cursor:pointer">
+        KI schätzen & eintragen
+      </button>
+    </div>
+  `;
+
+  document.body.appendChild(dialog);
+
+  // Store callback
+  window._followUpCallback = onConfirm;
+  window._followUpDesc = desc;
+}
+
+function dismissFollowUp() {
+  const d = document.getElementById('followUpDialog');
+  if (d) d.remove();
+  // Proceed with original entry without changes
+  window._followUpCallback && window._followUpCallback(null);
+}
+
+async function confirmFollowUp() {
+  const grams = document.getElementById('followUpGrams')?.value;
+  const unit  = document.getElementById('followUpUnit')?.value || 'g';
+  const d = document.getElementById('followUpDialog');
+
+  if (!grams) { showToast('Bitte Menge eingeben'); return; }
+
+  // Update description with portion info
+  const newDesc = `${window._followUpDesc} (${grams}${unit})`;
+  document.getElementById('mealDesc').value = newDesc;
+
+  // Show loading in button
+  const btn = d.querySelector('button:last-child');
+  if (btn) { btn.textContent = 'KI schätzt...'; btn.disabled = true; }
+
+  // Close dialog and trigger AI estimation
+  if (d) d.remove();
+
+  // Trigger AI analysis with the new complete description
+  await analyzeWithAI();
+
+  // After AI fills in the values, auto-submit
+  setTimeout(() => {
+    window._followUpCallback && window._followUpCallback('done');
+  }, 300);
+}
+
+// Close dialog on background tap
+document.addEventListener('click', (e) => {
+  const dialog = document.getElementById('followUpDialog');
+  if (dialog && !dialog.contains(e.target) &&
+      !e.target.closest('#followUpDialog')) {
+    dialog.remove();
+  }
+}, true);
+
+async function addMeal(){
+  const desc=document.getElementById('mealDesc').value.trim();
+  if(!desc){showToast('Bitte Mahlzeit beschreiben');return;}
+  const _kcal=parseFloat(document.getElementById('mKcal').value)||0;
+  const _fat=parseFloat(document.getElementById('mFat').value)||0;
+  const _prot=parseFloat(document.getElementById('mProt').value)||0;
+  const _carb=parseFloat(document.getElementById('mCarb').value)||0;
+
+  // Smart validation - check if we should ask for more info
+  const issues = await validateMealInput(desc, _kcal, _fat, _prot, _carb);
+  if (issues.length > 0) {
+    showFollowUpDialog(desc, issues, (result) => {
+      if (result === null) {
+        // User chose "trotzdem eintragen" - save as-is
+        _saveMeal();
+      }
+      // if result === 'done', analyzeWithAI already filled fields,
+      // addMeal will be called again automatically
+    });
+    return;
+  }
+
+  _saveMeal();
+
+  function _saveMeal() {
+    const d=document.getElementById('mealDesc').value.trim()||desc;
+    const k=parseFloat(document.getElementById('mKcal').value)||_kcal;
+    const f=parseFloat(document.getElementById('mFat').value)||_fat;
+    const p=parseFloat(document.getElementById('mProt').value)||_prot;
+    const c=parseFloat(document.getElementById('mCarb').value)||_carb;
+    S.meals.push({date:TODAY(),time:document.getElementById('mealTime').value,desc:d,kcal:k,fat:f,prot:p,carb:c});
+    save();
+    ['mealDesc','mKcal','mFat','mProt','mCarb'].forEach(id=>document.getElementById(id).value='');
+    document.getElementById('aiEstimate').style.display='none';
+    updateHeader();renderMeals();renderMacroBars();renderFoodStreaks();
+    showToast('✓ Mahlzeit eingetragen');
+  }
+}
+
+function renderMeals(){
+  const log=document.getElementById('mealLog');
+  const tm=S.meals.filter(m=>m.date===TODAY());
+  if(!tm.length){log.innerHTML='<div class="empty">Noch nichts eingetragen.</div>';return;}
+  const ord=['Frühstück','Mittagessen','Abendessen','Snack'];
+  log.innerHTML=[...tm].sort((a,b)=>ord.indexOf(a.time)-ord.indexOf(b.time)).map(m=>`<div class="meal-item"><div class="meal-top"><span class="meal-timetag">${m.time}</span>${m.kcal?`<span class="meal-kcaltag">${m.kcal} kcal</span>`:''}</div><div class="meal-desc">${m.desc}</div>${(m.fat||m.prot||m.carb)?`<div class="meal-macros">${m.fat?`<span class="mm">F: ${m.fat}g</span>`:''}${m.prot?`<span class="mm">E: ${m.prot}g</span>`:''}${m.carb?`<span class="mm">KH: ${m.carb}g</span>`:''}</div>`:''}</div>`).join('');
+}
+
+async function analyzeWithAI(){
+  const desc=document.getElementById('mealDesc').value.trim();
+  if(!desc){showToast('Bitte zuerst Mahlzeit beschreiben');return;}
+  const wrap=document.getElementById('aiEstimate');
+  wrap.style.display='block';
+  wrap.innerHTML='<div class="ai-bubble"><div class="ai-tag">✦ KI analysiert...</div><div class="ai-text">Einen Moment...</div></div>';
+  const tot=getDayTotals(TODAY());
+  const prompt=`Analysiere diese Keto-Mahlzeit:\n"${desc}"\n\nBisherige Tagesmakros: Fett ${fmt(tot.fat)}g, Eiweiß ${fmt(tot.prot)}g, KH ${fmt(tot.carb)}g\nZiele: Fett ${TGT.fat}g, Eiweiß max ${TGT.prot}g, KH max 20g\n\nWICHTIG: Prüfe ob Eiweiß das Tagesziel überschreiten würde.\nAntworte NUR mit JSON:\n{"kcal":0,"fat":0,"prot":0,"carb":0,"feedback":"Bewertung auf Deutsch inkl. Eiweiß-Hinweis falls nötig"}`;
+  try{
+    const res=await Promise.race([fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,messages:[{role:'user',content:prompt}]})}),new Promise((_,r)=>setTimeout(()=>r(new Error('timeout')),30000))]);
+    const data=await res.json();
+    const parsed=JSON.parse((data.content?.[0]?.text||'{}').replace(/```json|```/g,'').trim());
+    document.getElementById('mKcal').value=parsed.kcal||'';document.getElementById('mFat').value=parsed.fat||'';document.getElementById('mProt').value=parsed.prot||'';document.getElementById('mCarb').value=parsed.carb||'';
+    const newP=tot.prot+(parsed.prot||0);
+    const pWarn=newP>TGT.prot*1.1?`\n⚠️ Eiweiß-Check: Mit dieser Mahlzeit ${fmt(newP)}g – über Ziel (${TGT.prot}g). Portion reduzieren!`:'';
+    wrap.innerHTML=`<div class="ai-bubble"><div class="ai-tag">✦ Schätzung übernommen – "Eintragen" drücken</div><div class="ai-text">${parsed.feedback||''}${pWarn}</div></div>`;
+  }catch(e){wrap.innerHTML='<div class="ai-bubble"><div class="ai-text">Fehler – bitte manuell eingeben.</div></div>';}
+}
+
+// ============ WEIGHT ============
+function addWeight(){
+  const val=parseFloat(document.getElementById('weightInput').value);
+  if(!val||val<30||val>250){showToast('Bitte gültiges Gewicht');return;}
+  const weightWarn=validateWeight(val);
+  if(weightWarn){
+    if(!confirm(weightWarn))return;
+  }
+  const now=new Date();
+  const _isoNow=now.toISOString().split('T')[0];
+  S.weights=S.weights.filter(w=>w.iso!==_isoNow);
+  S.weights.push({date:now.toLocaleDateString('de-DE',{day:'2-digit',month:'2-digit',year:'numeric'}),iso:_isoNow,value:val});
+  S.currentWeight=val;save();renderWeightLog();document.getElementById('weightInput').value='';showToast('✓ Gewicht eingetragen');
+}
+function renderWeightLog(){
+  const curr=S.currentWeight;const lost=START_W-curr;const pct=Math.max(0,Math.min(100,(lost/(START_W-GOAL_W))*100));
+  document.getElementById('wRing').style.strokeDashoffset=207.3-(pct/100)*207.3;
+  document.getElementById('wPct').textContent=Math.round(pct)+'%';
+  document.getElementById('wCurrD').innerHTML=curr.toFixed(1).replace('.',',')+'<span class="u"> kg</span>';
+  document.getElementById('wRemain').textContent=`Noch ${Math.max(0,curr-GOAL_W).toFixed(1).replace('.',',')} kg bis Ziel (62,5 kg)`;
+  const log=document.getElementById('weightLog');
+  if(!S.weights.length){log.innerHTML='<div class="empty">Noch keine Einträge.</div>';return;}
+  log.innerHTML=[...S.weights].reverse().map((e,i,arr)=>{const prev=arr[i+1];let badge='';if(prev){const d=e.value-prev.value;const cls=d<0?'dd':d>0?'du':'ds';const sign=d<0?'▼ ':d>0?'▲ +':'● ';badge=`<span class="dbadge ${cls}">${sign}${Math.abs(d).toFixed(1)} kg</span>`;}return`<div class="wlog-entry"><div><div class="wlog-date">${e.date}</div><div class="wlog-w">${e.value.toFixed(1).replace('.',',')} kg</div></div>${badge}</div>`;}).join('');
+  drawChart();
+  checkPlateau();
+}
+function drawChart(){
+  const canvas=document.getElementById('weightChart');if(!canvas)return;
+  const ctx=canvas.getContext('2d');const dpr=window.devicePixelRatio||1;
+  const w=Math.max(200, canvas.parentElement.offsetWidth-30);const h=110;
+  canvas.width=w*dpr;canvas.height=h*dpr;canvas.style.width=w+'px';canvas.style.height=h+'px';ctx.scale(dpr,dpr);
+  const data=S.weights.slice(-8);
+  if(data.length<2){ctx.fillStyle='rgba(255,255,255,.4)';ctx.font='11px Arial';ctx.textAlign='center';ctx.fillText('Mehr Einträge für Verlauf',w/2,h/2);return;}
+  const vals=data.map(d=>d.value);const mn=Math.min(...vals)-.5,mx=Math.max(...vals)+.5;
+  const p={t:12,r:10,b:22,l:32};const cw=w-p.l-p.r,ch=h-p.t-p.b;
+  const xp=i=>p.l+(i/(data.length-1))*cw;const yp=v=>p.t+(1-(v-mn)/(mx-mn))*ch;
+  const g=ctx.createLinearGradient(0,p.t,0,p.t+ch);g.addColorStop(0,'rgba(245,200,0,.3)');g.addColorStop(1,'rgba(245,200,0,0)');
+  ctx.beginPath();ctx.moveTo(xp(0),yp(vals[0]));for(let i=1;i<data.length;i++)ctx.lineTo(xp(i),yp(vals[i]));ctx.lineTo(xp(data.length-1),h-p.b);ctx.lineTo(xp(0),h-p.b);ctx.closePath();ctx.fillStyle=g;ctx.fill();
+  ctx.beginPath();ctx.moveTo(xp(0),yp(vals[0]));for(let i=1;i<data.length;i++)ctx.lineTo(xp(i),yp(vals[i]));ctx.strokeStyle='#F5C800';ctx.lineWidth=2.5;ctx.lineJoin='round';ctx.stroke();
+  data.forEach((d,i)=>{ctx.beginPath();ctx.arc(xp(i),yp(d.value),4,0,Math.PI*2);ctx.fillStyle='#F5C800';ctx.fill();ctx.beginPath();ctx.arc(xp(i),yp(d.value),2,0,Math.PI*2);ctx.fillStyle='#fff';ctx.fill();const pts=d.date.split('.');ctx.fillStyle='rgba(255,255,255,.5)';ctx.font='9px Arial';ctx.textAlign='center';ctx.fillText(pts[0]+'.'+pts[1],xp(i),h-5);});
+  ctx.fillStyle='rgba(255,255,255,.4)';ctx.font='10px Arial';ctx.textAlign='right';[mn+.5,(mn+mx)/2,mx-.5].forEach(v=>ctx.fillText(v.toFixed(1),p.l-3,yp(v)+4));
+}
+
+// ============ STEPS ============
+function addSteps(){
+  const val=parseInt(document.getElementById('stepsInput').value);
+  if(!val||val<0){showToast('Bitte Schritte eingeben');return;}
+  const stepsWarn=validateSteps(val);
+  if(stepsWarn){
+    if(!confirm(stepsWarn+' Trotzdem eintragen?'))return;
+  }
+  const today=TODAY();const idx=S.steps.findIndex(s=>s.date===today);
+  if(idx>=0)S.steps[idx].steps=val;else S.steps.push({date:today,steps:val});
+  save();updateHeader();renderMovement();document.getElementById('stepsInput').value='';showToast('✓ Schritte eingetragen');
+}
+function renderMovement(){
+  const today=TODAY();
+  const steps=getDaySteps(today);
+  const goal=getStepsGoal();
+  const pct=Math.min(100,(steps/goal)*100);
+  const circ=345.4;
+
+  // Update ring
+  const ring=document.getElementById('stepsRing');
+  if(ring) ring.style.strokeDashoffset=circ-(pct/100)*circ;
+  const stepsD=document.getElementById('stepsD');
+  if(stepsD) stepsD.textContent=steps.toLocaleString('de-DE');
+  const goalLbl=document.getElementById('stepsGoalLbl');
+  if(goalLbl) goalLbl.textContent='von '+goal.toLocaleString('de-DE');
+  const pctEl=document.getElementById('stepsPct');
+  if(pctEl) pctEl.textContent=Math.round(pct)+'%';
+
+  // Update badges
+  const kmBadge=document.getElementById('kmBadge');
+  if(kmBadge) kmBadge.textContent=(steps*.00075).toFixed(1).replace('.',',')+' km';
+  const burnBadge=document.getElementById('burnBadge');
+  if(burnBadge) burnBadge.textContent=stepsToCal(steps)+' kcal';
+  const burnNote=document.getElementById('burnNote');
+  if(burnNote) burnNote.textContent=steps>=goal?'Ziel erreicht!':steps>0?'Noch '+(goal-steps).toLocaleString('de-DE'):'';
+
+  // Ring color: green if goal reached
+  if(ring) ring.style.stroke = steps>=goal ? 'var(--ok)' : 'var(--tc)';
+
+  // Week dots
+  const now=new Date();const dow=(now.getDay()+6)%7;
+  const days=['Mo','Di','Mi','Do','Fr','Sa','So'];
+  let html='';
+  for(let i=0;i<7;i++){
+    const d=new Date(now);d.setDate(now.getDate()-dow+i);
+    const iso=d.toISOString().split('T')[0];
+    const e=S.steps.find(s=>s.date===iso);
+    const hit=e&&e.steps>=goal;
+    const isTd=iso===today;
+    html+=`<div class="wdot ${isTd?'today':hit?'done':e?'ds':''}">${isTd?'●':hit?'✓':days[i]}</div>`;
+  }
+  const wd=document.getElementById('weekDots');
+  if(wd) wd.innerHTML=html;
+
+  // Activity log
+  const actLog=document.getElementById('actLog');
+  if(actLog){
+    if(!S.steps.length){actLog.innerHTML='<div class="empty">Keine Einträge.</div>';}
+    else{actLog.innerHTML=S.steps.slice(-5).reverse().map(s=>{
+      const hit=s.steps>=goal;
+      return`<div class="wlog-entry"><div><div class="wlog-date">${s.date}</div><div class="wlog-w">${s.steps.toLocaleString('de-DE')} Schritte</div></div><span class="dbadge ${hit?'dd':'ds'}">${stepsToCal(s.steps)} kcal</span></div>`;
+    }).join('');}
+  }
+
+  // Streaks & challenges
+  const stepsStreak=calcStreak(S.steps, e=>e.steps>=goal);
+  renderStreakBadges(stepsStreak,'stepsStreakBadges','stepsStreakFlame');
+  renderChallenges(STEP_CHALLENGES,'stepsChallenges');
+}
+
+// ============ FASTING TIMER ============
+let fastInterval=null;
+function setFastPlan(h,eatH,btn){
+  document.querySelectorAll('.fplan-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  S.fast.planH=h;S.fast.planEatH=eatH;save();
+  document.getElementById('fastGoalH').textContent=h+'h';
+  document.getElementById('fastEatH').textContent=eatH+'h';
+  updateFastDisplay();
+}
+function toggleFast(){
+  if(S.fast.active){
+    // stop
+    S.fast.active=false;S.fast.startTs=null;
+    clearInterval(fastInterval);fastInterval=null;
+    document.getElementById('fastBtn').textContent='Fasten starten';
+    document.getElementById('fastBtn').className='fast-start-btn';
+    document.getElementById('fastSubLbl').textContent='beendet';
+    document.getElementById('fastPhase').textContent='';
+    document.getElementById('fastTime').textContent='00:00:00';
+    document.getElementById('fastRing').style.strokeDashoffset=427.3;
+    document.getElementById('fastEndAt').textContent='–';
+    showToast('Fasten beendet');
+  } else {
+    S.fast.active=true;S.fast.startTs=Date.now();save();
+    document.getElementById('fastBtn').textContent='Fasten beenden';
+    document.getElementById('fastBtn').className='fast-start-btn running';
+    startFastTick();
+  }
+  save();
+}
+function startFastTick(){
+  if(fastInterval)clearInterval(fastInterval);
+  fastInterval=setInterval(updateFastDisplay,1000);
+  updateFastDisplay();
+}
+function updateFastDisplay(){
+  if(!S.fast.active||!S.fast.startTs){return;}
+  const elapsed=Math.max(0, Math.floor((Date.now()-S.fast.startTs)/1000));
+  const goalSec=S.fast.planH*3600;
+  const pct=Math.min(100,(elapsed/goalSec)*100);
+  const circ=427.3;
+  document.getElementById('fastRing').style.strokeDashoffset=circ-(pct/100)*circ;
+  const h=Math.floor(elapsed/3600);const m=Math.floor((elapsed%3600)/60);const s=elapsed%60;
+  document.getElementById('fastTime').textContent=`${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  const elapsedH=elapsed/3600;
+  let phase='',sublbl='läuft';
+  if(elapsedH<4){phase='🔄 Verdauungsphase'}
+  else if(elapsedH<8){phase='⚡ Glykogen sinkt, Ketose beginnt'}
+  else if(elapsedH<12){phase='🔥 Tiefe Ketose – Fettverbrennung aktiv!'}
+  else if(elapsedH<16){phase='🌟 Autophagie beginnt – Zellreinigung!'}
+  else{phase='💪 Maximale Fettverbrennung & Autophagie'}
+  if(elapsed>=goalSec){phase='✅ Ziel erreicht!';sublbl='geschafft!';}
+  document.getElementById('fastPhase').textContent=phase;
+  document.getElementById('fastSubLbl').textContent=sublbl;
+  const endTs=S.fast.startTs+goalSec*1000;
+  const endDate=new Date(endTs);
+  document.getElementById('fastEndAt').textContent=endDate.toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'});
+}
+
+// ============ WEEKLY REVIEW ============
+let reviewWeekOffset=0;
+function changeReviewWeek(d){reviewWeekOffset+=d;renderWeekReview();}
+function getWeekDates(offset){
+  const now=new Date();const dow=(now.getDay()+6)%7;
+  const monday=new Date(now);monday.setDate(now.getDate()-dow+offset*7);
+  return Array.from({length:7},(_,i)=>{const d=new Date(monday);d.setDate(monday.getDate()+i);return d.toISOString().split('T')[0];});
+}
+function renderWeekReview(){
+  const dates=getWeekDates(reviewWeekOffset);
+  const days=['Mo','Di','Mi','Do','Fr','Sa','So'];
+  const now=new Date();
+  // label
+  const start=new Date(dates[0]);const end=new Date(dates[6]);
+  const lbl=reviewWeekOffset===0?'Diese Woche':reviewWeekOffset===-1?'Letzte Woche':`${start.toLocaleDateString('de-DE',{day:'2-digit',month:'2-digit'})} – ${end.toLocaleDateString('de-DE',{day:'2-digit',month:'2-digit'})}`;
+  document.getElementById('weekLabel').textContent=lbl;
+  // day boxes
+  let dhtml='';
+  let weights=[];let stepTotals=[];let carbVals=[];let protVals=[];let waterVals=[];let kcalVals=[];
+  for(let i=0;i<7;i++){
+    const iso=dates[i];const isFuture=new Date(iso)>now;
+    const we=S.weights.find(w=>w.iso===iso);
+    const st=getDaySteps(iso);const tot=getDayTotals(iso);const wml=getWaterMl(iso);
+    if(we)weights.push(we.value);
+    if(st)stepTotals.push(st);
+    if(tot.carb>0)carbVals.push({date:iso,val:tot.carb});
+    if(tot.prot>0)protVals.push({date:iso,val:tot.prot});
+    if(wml>0)waterVals.push(wml);
+    if(tot.kcal>0)kcalVals.push(tot.kcal);
+    const haData=!isFuture&&(we||st||tot.kcal);
+    const dayClass = isFuture ? 'future' : (st >= 7000 && tot.carb <= 20) ? 'best' : (tot.carb > 20) ? 'worst' : '';
+    dhtml+=`<div class="rday ${dayClass}">
+      <div class="rday-lbl">${days[i]}</div>
+      <div class="rday-w">${we?we.value.toFixed(1).replace('.',',')+'kg':isFuture?'–':'?'}</div>
+      <div class="rday-s">${st>=7000?'✓':''}${st>0?Math.round(st/1000)+'k':'–'}</div>
+    </div>`;
+  }
+  document.getElementById('reviewDays').innerHTML=dhtml;
+  // stats grid
+  const avgW=weights.length?weights.reduce((a,b)=>a+b,0)/weights.length:null;
+  const firstW=weights.length?weights[0]:null;const lastW=weights.length?weights[weights.length-1]:null;
+  const weightChange=firstW&&lastW?lastW-firstW:null;
+  const avgSteps=stepTotals.length?Math.round(stepTotals.reduce((a,b)=>a+b,0)/stepTotals.length):null;
+  const avgKcal=kcalVals.length?Math.round(kcalVals.reduce((a,b)=>a+b,0)/kcalVals.length):null;
+  const avgWater=waterVals.length?Math.round(waterVals.reduce((a,b)=>a+b,0)/waterVals.length):null;
+  const maxProt=protVals.length?protVals.reduce((a,b)=>a.val>b.val?a:b):null;
+  const carbOver=carbVals.filter(c=>c.val>20).length;
+  document.getElementById('reviewGrid').innerHTML=`
+    <div class="rstat"><div class="rstat-val">${weightChange!==null?(weightChange>0?'+':'')+weightChange.toFixed(1).replace('.',',')+'kg':'–'}</div><div class="rstat-lbl">Gewichtsveränderung</div></div>
+    <div class="rstat"><div class="rstat-val">${avgSteps?Math.round(avgSteps/1000*10)/10+'k':'–'}</div><div class="rstat-lbl">Ø Schritte/Tag</div></div>
+    <div class="rstat"><div class="rstat-val" style="${carbOver>0?'color:var(--bad)':''}">${carbOver}</div><div class="rstat-lbl">Tage KH über 20g</div></div>
+    <div class="rstat"><div class="rstat-val">${avgWater?Math.round(avgWater/100)/10+'L':'–'}</div><div class="rstat-lbl">Ø Wasser/Tag</div></div>
+    <div class="rstat"><div class="rstat-val">${avgKcal?avgKcal+'kcal':'–'}</div><div class="rstat-lbl">Ø Kalorien/Tag</div></div>
+    <div class="rstat"><div class="rstat-val" style="${maxProt&&maxProt.val>TGT.prot?'color:var(--bad)':''}">${maxProt?fmt(maxProt.val)+'g':'–'}</div><div class="rstat-lbl">Max. Eiweiß/Tag</div><div class="rstat-sub">${maxProt&&maxProt.val>TGT.prot?'⚠️ zu hoch':'ok'}</div></div>`;
+  document.getElementById('aiReviewWrap').innerHTML=`<button class="btn btn-full btn-sec" onclick="generateWeekReview()">🤖 KI-Analyse erstellen</button>`;
+}
+
+async function generateWeekReview(){
+  const dates=getWeekDates(reviewWeekOffset);
+  const wrap=document.getElementById('aiReviewWrap');
+  wrap.innerHTML='<div class="ai-review"><div class="ai-tag">✦ KI analysiert deine Woche...</div><div class="ai-text">Einen Moment...</div></div>';
+  let summary='Wochendaten:\n';
+  for(const iso of dates){
+    const we=S.weights.find(w=>w.iso===iso);
+    const st=getDaySteps(iso);const tot=getDayTotals(iso);const wml=getWaterMl(iso);
+    const d=new Date(iso);if(d>new Date())continue;
+    summary+=`${isoToDisplay(iso)}: Gewicht ${we?we.value+'kg':'–'}, Schritte ${st||0}, Kalorien ${fmt(tot.kcal)}, Fett ${fmt(tot.fat)}g, Eiweiß ${fmt(tot.prot)}g, KH ${fmt(tot.carb)}g, Wasser ${wml}ml\n`;
+  }
+  const SYS=`Du bist Caros Keto-Coach. Caro: 40 Jahre, Start 76,5 kg, Ziel 62,5 kg. Keto-Ziele: max 20g KH, ${TGT.prot}g Eiweiß, ${TGT.fat}g Fett. Caro neigt zu viel Eiweiß. Bürojob, Spazierengehen. Schreib einen motivierenden Wochenrückblick auf Deutsch: Was lief gut? Was verbessern? Konkrete Tipps für nächste Woche. Max 200 Wörter.`;
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,system:SYS,messages:[{role:'user',content:summary}]})});
+    const data=await res.json();
+    wrap.innerHTML=`<div class="ai-review"><div class="ai-tag">✦ KI-Wochenanalyse</div><div class="ai-text">${data.content?.[0]?.text||'Keine Antwort.'}</div></div>`;
+  }catch(e){wrap.innerHTML='<div class="ai-review"><div class="ai-text">Verbindungsfehler.</div></div>';}
+}
+
+// ============ AI ============
+const SYS=`Du bist Caros Keto-Coach. Caro: 40 Jahre, 76,5 kg Start, Ziel 62,5 kg, kennt Keto (30 kg damit verloren). Beckenboden: kein Joggen, nur Gehen. Bürojob 8h. Ziele: max 20g KH, ${TGT.prot}g Eiweiß, ${TGT.fat}g Fett, ${TGT.kcal} kcal. Caro isst oft zu viel Eiweiß – weise aktiv darauf hin! Antworte auf Deutsch, max 150 Wörter, konkret und warm.`;
+async function askAI(){
+  const q=document.getElementById('questionInput').value.trim();if(!q){showToast('Bitte Frage eingeben');return;}
+  const btn=event.target;btn.textContent='...';btn.disabled=true;
+  const wrap=document.getElementById('aiAnswer');wrap.style.display='block';
+  wrap.innerHTML='<div class="ai-bubble"><div class="ai-tag">✦ Denkt nach...</div><div class="ai-text">...</div></div>';
+  const tot=getDayTotals(TODAY());
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,system:SYS,messages:[{role:'user',content:`Tagesstand: Fett ${fmt(tot.fat)}g, Eiweiß ${fmt(tot.prot)}g, KH ${fmt(tot.carb)}g, kcal ${fmt(tot.kcal)}, Schritte ${getDaySteps(TODAY())}, Wasser ${getWaterMl(TODAY())}ml.\n\nFrage: ${q}`}]})});
+    const data=await res.json();
+    wrap.innerHTML=`<div class="ai-bubble"><div class="ai-tag">✦ Antwort</div><div class="ai-text">${data.content?.[0]?.text||'Keine Antwort.'}</div></div>`;
+  }catch(e){wrap.innerHTML='<div class="ai-bubble"><div class="ai-text">Verbindungsfehler.</div></div>';}
+  btn.textContent='Fragen →';btn.disabled=false;
+}
+
+const QUOTES=['Du hast es schon einmal geschafft. Dieser Körper kennt den Weg zurück.','Jeder Spaziergang ist ein Schritt weg vom alten Gewicht.','Du startest mit 30 Kilo Erfahrung im Gepäck – kein Anfänger.','Keto ist kein Verzicht. Es ist eine Entscheidung für dich.','Dein Körper erinnert sich an Ketose. Er kommt schneller dahin als du denkst.','40 ist kein Hindernis – es ist die beste Version von dir, die wartet.','Wasser trinken ist kein Detail. Es ist Keto-Grundlage.'];
+const TIPS=['Die ersten 3 Tage sind die härtesten. Danach läuft dein Körper auf Fett.','1–2 Tassen Brühe täglich verhindert die Keto-Grippe fast komplett.','Alle 60 Minuten aufstehen – auch 2 Minuten aktivieren den Stoffwechsel.','Zu viel Eiweiß bremst die Ketose. Max. 1,2g pro kg Körpergewicht täglich.','Hunger auf Süßes? Erst ein großes Glas Wasser trinken.','Gehen ist Fettverbrennung pur. 30 Minuten = aktive Ketose.','Magnesium vor dem Schlafen: weniger Krämpfe, besserer Schlaf.'];
+function loadDaily(){
+  const d=new Date();const idx=d.getDate()%QUOTES.length;
+  document.getElementById('dailyQuote').textContent=QUOTES[idx];
+  document.getElementById('quoteDay').textContent=d.toLocaleDateString('de-DE',{weekday:'long',day:'numeric',month:'long'});
+  document.getElementById('dailyTip').innerHTML=`<div class="ai-bubble"><div class="ai-tag">✦ Keto-Wissen</div><div class="ai-text">${TIPS[d.getDay()]}</div></div>`;
+}
+
+
+// ============ BARCODE SCANNER ============
+let scannerStream = null;
+let scannerInterval = null;
+let barcodeDetector = null;
+
+async function openScanner() {
+  const modal = document.getElementById('scannerModal');
+  modal.style.display = 'flex';
+  document.getElementById('scannerResult').innerHTML = '';
+  document.getElementById('manualBarcode').value = '';
+
+  // Try native BarcodeDetector API first (Android Chrome supports this)
+  if ('BarcodeDetector' in window) {
+    try {
+      barcodeDetector = new BarcodeDetector({
+        formats: ['ean_13','ean_8','upc_a','upc_e','code_128','code_39','qr_code','data_matrix']
+      });
+    } catch(e) { barcodeDetector = null; }
+  }
+
+  // Start camera
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+    document.getElementById('scannerResult').innerHTML = '<div style="color:#FFD83D;font-size:13px;background:rgba(255,200,0,.1);padding:12px;border-radius:9px">📷 Kamera-API nicht verfügbar. Bitte Barcode manuell eingeben.</div>';
+    return;
+  }
+  try {
+    scannerStream = await navigator.mediaDevices.getUserMedia({
+      video: { facingMode: 'environment', width: { ideal: 1280 }, height: { ideal: 720 } }
+    });
+    const video = document.getElementById('scannerVideo');
+    video.srcObject = scannerStream;
+    await video.play();
+
+    if (barcodeDetector) {
+      // Native detection loop
+      scannerInterval = setInterval(async () => {
+        try {
+          const codes = await barcodeDetector.detect(video);
+          if (codes.length > 0) {
+            const barcode = codes[0].rawValue;
+            clearInterval(scannerInterval);
+            await lookupBarcode(barcode);
+          }
+        } catch(e) {}
+      }, 400);
+    } else {
+      // Fallback: load ZXing via CDN for older browsers
+      loadZXing();
+    }
+  } catch(e) {
+    document.getElementById('scannerResult').innerHTML =
+      '<div style="color:#FF8A65;font-size:13px;background:rgba(255,100,100,.1);padding:12px;border-radius:9px;margin-top:8px">' +
+      '⚠️ Kamera nicht verfügbar.<br>Bitte Barcode manuell eingeben oder Kamerazugriff in den Browser-Einstellungen erlauben.</div>';
+  }
+}
+
+function loadZXing() {
+  const s = document.createElement('script');
+  s.src = 'https://cdnjs.cloudflare.com/ajax/libs/zxing-js/0.18.6/zxing.min.js';
+  s.onload = () => startZXing();
+  s.onerror = () => {
+    document.getElementById('scannerResult').innerHTML =
+      '<div style="color:#FFD83D;font-size:12px;padding:10px">Automatische Erkennung nicht verfügbar – bitte Barcode manuell eingeben.</div>';
+  };
+  document.head.appendChild(s);
+}
+
+function startZXing() {
+  try {
+    const codeReader = new ZXing.BrowserMultiFormatReader();
+    const video = document.getElementById('scannerVideo');
+    codeReader.decodeFromVideoElement(video, (result, err) => {
+      if (result) {
+        codeReader.reset();
+        lookupBarcode(result.getText());
+      }
+    });
+  } catch(e) {}
+}
+
+function closeScanner() {
+  if (scannerInterval) { clearInterval(scannerInterval); scannerInterval = null; }
+  if (scannerStream) { scannerStream.getTracks().forEach(t => t.stop()); scannerStream = null; }
+  document.getElementById('scannerModal').style.display = 'none';
+  document.getElementById('scannerVideo').srcObject = null;
+}
+
+async function lookupBarcode(barcode) {
+  barcode = barcode?.trim();
+  if (!barcode) { showToast('Bitte Barcode eingeben'); return; }
+
+  // Stop scanning
+  if (scannerInterval) { clearInterval(scannerInterval); scannerInterval = null; }
+
+  const resultEl = document.getElementById('scannerResult');
+  resultEl.innerHTML = '<div style="color:#FFD83D;font-size:13px;padding:12px;text-align:center">🔍 Suche Produkt...</div>';
+
+  // 1. Try Open Food Facts API (free, no key needed, huge German database)
+  try {
+    const res = await fetch(`https://world.openfoodfacts.org/api/v0/product/${barcode}.json`);
+    const data = await res.json();
+
+    if (data.status === 1 && data.product) {
+      const p = data.product;
+      const n = p.nutriments || {};
+      const name = p.product_name_de || p.product_name || p.generic_name || 'Unbekanntes Produkt';
+      const brand = p.brands || '';
+      const per100 = {
+        kcal: Math.round(n['energy-kcal_100g'] || n['energy_100g'] / 4.184 || 0),
+        fat:  Math.round((n['fat_100g'] || 0) * 10) / 10,
+        prot: Math.round((n['proteins_100g'] || 0) * 10) / 10,
+        carb: Math.round((n['carbohydrates_100g'] || 0) * 10) / 10,
+      };
+
+      // Default to 100g portion
+      let portion = 100;
+      if (p.serving_size) {
+        const m = p.serving_size.match(/([\d.]+)/);
+        if (m) portion = parseFloat(m[1]);
+      }
+
+      const factor = portion / 100;
+      const portionNutr = {
+        kcal: Math.round(per100.kcal * factor),
+        fat:  Math.round(per100.fat * factor * 10) / 10,
+        prot: Math.round(per100.prot * factor * 10) / 10,
+        carb: Math.round(per100.carb * factor * 10) / 10,
+      };
+
+      // Keto assessment
+      const ketoOk = portionNutr.carb <= 5;
+      const ketoWarn = portionNutr.carb > 5 && portionNutr.carb <= 15;
+      const ketoBad = portionNutr.carb > 15;
+      const ketoMsg = ketoBad
+        ? `⚠️ Achtung: ${portionNutr.carb}g KH pro Portion – nicht keto-geeignet!`
+        : ketoWarn
+        ? `🔸 ${portionNutr.carb}g KH pro Portion – nur kleine Mengen keto-ok`
+        : `✓ Keto-freundlich (${portionNutr.carb}g KH pro Portion)`;
+      const ketoBg = ketoBad ? 'rgba(200,60,60,.2)' : ketoWarn ? 'rgba(200,140,0,.2)' : 'rgba(46,158,107,.2)';
+      const ketoColor = ketoBad ? '#FF8A65' : ketoWarn ? '#FFD83D' : '#81C784';
+
+      resultEl.innerHTML = `
+        <div style="background:rgba(255,255,255,.08);border-radius:12px;padding:14px;margin-top:4px">
+          <div style="font-size:15px;font-weight:700;color:#fff;margin-bottom:2px">${name}</div>
+          ${brand ? `<div style="font-size:11px;color:rgba(255,255,255,.5);margin-bottom:10px">${brand}</div>` : '<div style="margin-bottom:8px"></div>'}
+          <!-- LIVE MACRO GRID -->
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:6px;margin-bottom:10px">
+            <div style="background:rgba(245,200,0,.15);border-radius:8px;padding:8px 4px;text-align:center">
+              <div id="pc-kcal" style="font-size:16px;font-weight:700;color:#F5C800">${portionNutr.kcal}</div>
+              <div style="font-size:9px;color:rgba(255,255,255,.5);text-transform:uppercase">kcal</div>
+            </div>
+            <div style="background:rgba(255,255,255,.06);border-radius:8px;padding:8px 4px;text-align:center">
+              <div id="pc-fat" style="font-size:16px;font-weight:700;color:#fff">${portionNutr.fat}g</div>
+              <div style="font-size:9px;color:rgba(255,255,255,.5);text-transform:uppercase">Fett</div>
+            </div>
+            <div style="background:rgba(255,255,255,.06);border-radius:8px;padding:8px 4px;text-align:center">
+              <div id="pc-prot" style="font-size:16px;font-weight:700;color:#fff">${portionNutr.prot}g</div>
+              <div style="font-size:9px;color:rgba(255,255,255,.5);text-transform:uppercase">Eiweiß</div>
+            </div>
+            <div style="background:rgba(255,255,255,.06);border-radius:8px;padding:8px 4px;text-align:center">
+              <div id="pc-carb" style="font-size:16px;font-weight:700;color:#fff">${portionNutr.carb}g</div>
+              <div style="font-size:9px;color:rgba(255,255,255,.5);text-transform:uppercase">KH</div>
+            </div>
+          </div>
+          <!-- KETO BADGE -->
+          <div style="background:${ketoBg};border-radius:8px;padding:8px 10px;margin-bottom:10px">
+            <div id="pc-keto" style="font-size:12px;color:${ketoColor};font-weight:500">${ketoMsg}</div>
+          </div>
+          <!-- PORTION SELECTOR -->
+          <div style="background:rgba(255,255,255,.05);border-radius:10px;padding:12px;margin-bottom:10px">
+            <div style="font-size:11px;color:rgba(255,255,255,.5);margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px">Wie viel hast du gegessen?</div>
+            <div style="display:flex;gap:8px;align-items:center;margin-bottom:8px">
+              <input type="number" id="portionInput" value="${portion}" min="1" max="2000"
+                style="width:80px;background:rgba(255,255,255,.12);border:1.5px solid rgba(245,200,0,.4);color:#F5C800;border-radius:8px;padding:9px;font-size:18px;text-align:center;font-weight:700"
+                oninput="updatePortionCalc(${per100.kcal},${per100.fat},${per100.prot},${per100.carb})">
+              <span style="color:rgba(255,255,255,.6);font-size:14px">g</span>
+              <div style="display:flex;gap:5px;flex:1">
+                <button onclick="setPortionAndCalc(50,${per100.kcal},${per100.fat},${per100.prot},${per100.carb})" style="flex:1;background:rgba(255,255,255,.08);border:none;color:#fff;border-radius:7px;padding:7px 2px;font-size:11px;cursor:pointer">50g</button>
+                <button onclick="setPortionAndCalc(100,${per100.kcal},${per100.fat},${per100.prot},${per100.carb})" style="flex:1;background:rgba(255,255,255,.08);border:none;color:#fff;border-radius:7px;padding:7px 2px;font-size:11px;cursor:pointer">100g</button>
+                <button onclick="setPortionAndCalc(150,${per100.kcal},${per100.fat},${per100.prot},${per100.carb})" style="flex:1;background:rgba(255,255,255,.08);border:none;color:#fff;border-radius:7px;padding:7px 2px;font-size:11px;cursor:pointer">150g</button>
+                <button onclick="setPortionAndCalc(200,${per100.kcal},${per100.fat},${per100.prot},${per100.carb})" style="flex:1;background:rgba(255,255,255,.08);border:none;color:#fff;border-radius:7px;padding:7px 2px;font-size:11px;cursor:pointer">200g</button>
+              </div>
+            </div>
+            <div id="pc-portion-lbl" style="font-size:10px;color:rgba(255,255,255,.35);text-align:center">Pro ${portion}g Portion · Barcode: ${barcode}</div>
+          </div>
+          <button onclick="applyProduct('${name.replace(/'/g,"\'")}',${per100.kcal},${per100.fat},${per100.prot},${per100.carb})"
+            style="width:100%;background:#F5C800;color:#1A1A2E;border:none;border-radius:10px;padding:13px;font-weight:700;font-size:14px;cursor:pointer;letter-spacing:.3px">
+            ✓ Übernehmen & eintragen
+          </button>
+        </div>`;
+      return;
+    }
+  } catch(e) { console.log('OFF API error:', e); }
+
+  // 2. Fallback: let AI identify it
+  resultEl.innerHTML = '<div style="color:#FFD83D;font-size:13px;padding:12px;text-align:center">🤖 KI sucht Produkt...</div>';
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ model:'claude-sonnet-4-20250514', max_tokens:1000,
+        messages:[{role:'user',content:`Barcode: ${barcode}. Welches Lebensmittel ist das (wahrscheinlich deutsch/europäisch)? Schätze Nährwerte pro 100g. Antworte NUR JSON: {"name":"","kcal":0,"fat":0,"prot":0,"carb":0,"portion":100}`}]})
+    });
+    const data = await res.json();
+    const parsed = JSON.parse((data.content?.[0]?.text||'{}').replace(/\`\`\`json|\`\`\`/g,'').trim());
+    if (parsed.name) {
+      document.getElementById('mealDesc').value = parsed.name;
+      document.getElementById('mKcal').value = parsed.kcal || '';
+      document.getElementById('mFat').value = parsed.fat || '';
+      document.getElementById('mProt').value = parsed.prot || '';
+      document.getElementById('mCarb').value = parsed.carb || '';
+      resultEl.innerHTML = `<div style="color:#81C784;font-size:13px;padding:10px;background:rgba(46,158,107,.15);border-radius:9px">✓ KI-Schätzung für "${parsed.name}" übernommen</div>`;
+      setTimeout(closeScanner, 1500);
+    } else {
+      resultEl.innerHTML = `<div style="color:#FF8A65;font-size:13px;padding:10px">Produkt nicht gefunden. Bitte manuell eingeben.</div>`;
+    }
+  } catch(e) {
+    resultEl.innerHTML = `<div style="color:#FF8A65;font-size:13px;padding:10px">Produkt nicht gefunden (${barcode}). Bitte manuell eintragen.</div>`;
+  }
+}
+
+function updatePortionCalc(kcal100, fat100, prot100, carb100) {
+  const g = parseFloat(document.getElementById('portionInput')?.value) || 100;
+  const f = g / 100;
+  const kcal = Math.round(kcal100 * f);
+  const fat  = Math.round(fat100  * f * 10) / 10;
+  const prot = Math.round(prot100 * f * 10) / 10;
+  const carb = Math.round(carb100 * f * 10) / 10;
+
+  const el = id => document.getElementById(id);
+  if(el('pc-kcal')) el('pc-kcal').textContent = kcal;
+  if(el('pc-fat'))  el('pc-fat').textContent  = fat + 'g';
+  if(el('pc-prot')) el('pc-prot').textContent = prot + 'g';
+  if(el('pc-carb')) el('pc-carb').textContent = carb + 'g';
+
+  // update keto badge
+  const ketoOk  = carb <= 5;
+  const ketoWarn = carb > 5 && carb <= 15;
+  const ketoMsg  = carb > 15
+    ? '⚠️ ' + carb + 'g KH – nicht keto-geeignet!'
+    : ketoWarn
+    ? '🔸 ' + carb + 'g KH – nur kleine Mengen keto-ok'
+    : '✓ Keto-freundlich (' + carb + 'g KH)';
+  const ketoColor = carb > 15 ? '#FF8A65' : ketoWarn ? '#FFD83D' : '#81C784';
+  const ketoBg    = carb > 15 ? 'rgba(200,60,60,.2)' : ketoWarn ? 'rgba(200,140,0,.2)' : 'rgba(46,158,107,.2)';
+  if(el('pc-keto')) {
+    el('pc-keto').textContent = ketoMsg;
+    el('pc-keto').style.color = ketoColor;
+    el('pc-keto').parentElement.style.background = ketoBg;
+  }
+  if(el('pc-portion-lbl')) el('pc-portion-lbl').textContent = 'Pro ' + g + 'g Portion';
+}
+
+function setPortionAndCalc(g, kcal100, fat100, prot100, carb100) {
+  const el = document.getElementById('portionInput');
+  if(el) el.value = g;
+  updatePortionCalc(kcal100, fat100, prot100, carb100);
+}
+
+function applyProduct(name, kcal100, fat100, prot100, carb100) {
+  const g = parseFloat(document.getElementById('portionInput')?.value) || 100;
+  const f = g / 100;
+  document.getElementById('mealDesc').value = `${name} (${g}g)`;
+  document.getElementById('mKcal').value = Math.round(kcal100 * f);
+  document.getElementById('mFat').value  = Math.round(fat100 * f * 10) / 10;
+  document.getElementById('mProt').value = Math.round(prot100 * f * 10) / 10;
+  document.getElementById('mCarb').value = Math.round(carb100 * f * 10) / 10;
+  closeScanner();
+  showToast('✓ Produkt übernommen – jetzt eintragen!');
+}
+
+// ============ PLATEAU DETECTION ============
+function checkPlateau() {
+  const card = document.getElementById('plateauCard');
+  if (!card) return;
+  if (S.weights.length < 4) { card.style.display='none'; return; }
+
+  // Sort by date, take last 14 entries
+  const sorted = [...S.weights].sort((a,b) => a.iso > b.iso ? 1 : -1);
+  const recent = sorted.slice(-14);
+
+  // Find longest streak without meaningful loss (>0.3kg)
+  const THRESHOLD = 0.3; // kg – less than this = plateau
+  const PLATEAU_DAYS = 7; // days to trigger warning
+
+  let plateauStart = null;
+  let plateauDays = 0;
+  let maxVal = recent[0].value;
+
+  for (let i = 1; i < recent.length; i++) {
+    const drop = maxVal - recent[i].value;
+    if (drop < THRESHOLD) {
+      if (!plateauStart) plateauStart = i - 1;
+      plateauDays++;
+    } else {
+      plateauStart = null;
+      plateauDays = 0;
+      maxVal = Math.min(maxVal, recent[i].value);
+    }
+  }
+
+  if (plateauDays >= PLATEAU_DAYS) {
+    const startWeight = recent[plateauStart]?.value || recent[0].value;
+    const currWeight = recent[recent.length-1].value;
+    const diff = Math.abs(startWeight - currWeight).toFixed(1);
+    card.style.display = 'block';
+    card.innerHTML = `
+      <div style="background:linear-gradient(135deg,#2D1A00,#3D2800);border:1.5px solid rgba(245,200,0,.3);border-radius:14px;padding:16px;margin-bottom:11px">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+          <div style="font-size:24px">📊</div>
+          <div>
+            <div style="font-size:14px;font-weight:700;color:#F5C800">Plateau erkannt</div>
+            <div style="font-size:11px;color:rgba(255,200,0,.6)">${plateauDays} Tage kaum Veränderung (±${diff} kg)</div>
+          </div>
+        </div>
+        <div style="font-size:13px;color:rgba(255,255,255,.7);line-height:1.6;margin-bottom:12px">
+          Plateaus sind normal und kein Zeichen des Scheiterns – dein Körper passt sich an. Ein paar gezielte Änderungen können die Fettverbrennung wieder ankurbeln.
+        </div>
+        <div id="plateauTips" style="margin-bottom:12px">
+          <div style="font-size:11px;color:rgba(245,200,0,.5);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">Häufige Ursachen & Lösungen</div>
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <div style="background:rgba(255,255,255,.06);border-radius:8px;padding:9px 11px;font-size:12px;color:rgba(255,255,255,.75);line-height:1.5">
+              🥩 <b style="color:#F5C800">Zu viel Eiweiß?</b> Prüfe ob du über ${TGT.prot}g/Tag liegst – überschuss wird in Zucker umgewandelt.
+            </div>
+            <div style="background:rgba(255,255,255,.06);border-radius:8px;padding:9px 11px;font-size:12px;color:rgba(255,255,255,.75);line-height:1.5">
+              💧 <b style="color:#F5C800">Genug Wasser?</b> Mindestens 2L täglich – Wassereinlagerungen können das Gewicht stagnieren lassen.
+            </div>
+            <div style="background:rgba(255,255,255,.06);border-radius:8px;padding:9px 11px;font-size:12px;color:rgba(255,255,255,.75);line-height:1.5">
+              🚶 <b style="color:#F5C800">Schritte erhöhen?</b> Versuche diese Woche täglich 1.000 Schritte mehr als gewohnt.
+            </div>
+            <div style="background:rgba(255,255,255,.06);border-radius:8px;padding:9px 11px;font-size:12px;color:rgba(255,255,255,.75);line-height:1.5">
+              ⏱️ <b style="color:#F5C800">Intervallfasten?</b> Ein 16:8-Fastentag kann die Ketose vertiefen und das Plateau brechen.
+            </div>
+          </div>
+        </div>
+        <button onclick="getPlateauAdvice(${plateauDays},${currWeight})"
+          style="width:100%;background:#F5C800;color:#1A1A2E;border:none;border-radius:9px;padding:11px;font-weight:700;font-size:13px;cursor:pointer">
+          🤖 Persönlichen KI-Tipp holen
+        </button>
+        <div id="plateauAiTip" style="margin-top:10px"></div>
+      </div>`;
+  } else {
+    card.style.display = 'none';
+  }
+}
+
+async function getPlateauAdvice(days, currentWeight) {
+  const el = document.getElementById('plateauAiTip');
+  el.innerHTML = '<div style="color:#FFD83D;font-size:12px;padding:8px;text-align:center">🤖 Analyse läuft...</div>';
+
+  const tot = getDayTotals(TODAY());
+  const avgSteps = S.steps.length
+    ? Math.round(S.steps.slice(-7).reduce((a,b) => a + b.steps, 0) / Math.min(7, S.steps.length))
+    : 0;
+  const avgWater = (() => {
+    const keys = Object.keys(S.water).sort().slice(-7);
+    return keys.length ? Math.round(keys.reduce((a,k) => a + S.water[k], 0) / keys.length) : 0;
+  })();
+
+  const context = `Caro ist seit ${days} Tagen in einem Gewichtsplateau bei ${currentWeight} kg (Ziel: 62,5 kg).
+Durchschnitt letzte Woche: ${avgSteps} Schritte/Tag, ${avgWater}ml Wasser/Tag.
+Heutiger Eiweiß-Stand: ${fmt(tot.prot)}g (Ziel: ${TGT.prot}g), KH: ${fmt(tot.carb)}g.
+Aktuelle Ernährung: Hauptsächlich Eier, Hackfleisch, Lachs, Frischkäse, Joghurt.`;
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514', max_tokens: 1000,
+        system: `Du bist Caros Keto-Coach. Caro: 40 Jahre, Bürojob, kein Joggen (Beckenboden), nur Spazierengehen. Keto-Erfahrung: hat bereits 30 kg damit verloren. Isst oft zu viel Eiweiß. Gib konkrete, sofort umsetzbare Tipps zum Plateau-Brechen. Max. 180 Wörter, auf Deutsch, warm und motivierend.`,
+        messages: [{role:'user', content: context + '\n\nWas soll ich konkret diese Woche anders machen um das Plateau zu brechen?'}]
+      })
+    });
+    const data = await res.json();
+    el.innerHTML = `<div style="background:rgba(245,200,0,.08);border-radius:9px;padding:12px;border:1px solid rgba(245,200,0,.2)">
+      <div style="font-size:9px;color:#F5C800;text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px">✦ Persönlicher KI-Tipp</div>
+      <div style="font-size:13px;color:rgba(255,255,255,.85);line-height:1.65;white-space:pre-wrap">${data.content?.[0]?.text || 'Keine Antwort.'}</div>
+    </div>`;
+  } catch(e) {
+    el.innerHTML = '<div style="color:#FF8A65;font-size:12px;padding:8px">Verbindungsfehler.</div>';
+  }
+}
+
+
+// ============ BACKUP / EXPORT / IMPORT ============
+
+function exportData() {
+  try {
+    // Build export object with metadata
+    const exportObj = {
+      version: '1.0',
+      exportDate: new Date().toISOString(),
+      exportDateDE: new Date().toLocaleDateString('de-DE', {day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'}),
+      appName: 'Keto Journey',
+      data: S
+    };
+
+    const json = JSON.stringify(exportObj, null, 2);
+    const blob = new Blob([json], {type: 'application/json'});
+    const url = URL.createObjectURL(blob);
+
+    const date = new Date().toLocaleDateString('de-DE',{day:'2-digit',month:'2-digit',year:'numeric'}).replace(/\./g,'-');
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `KetoJourney-Backup-${date}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+
+    // Save last backup date
+    _store.set('keto_last_backup', new Date().toISOString());
+    updateLastBackupDate();
+    updateDataOverview();
+
+    document.getElementById('exportStatus').innerHTML =
+      `<div style="background:var(--ok-bg);color:var(--ok);border-radius:9px;padding:10px 12px;font-size:13px;font-weight:500">
+        ✓ Backup erfolgreich erstellt! Datei: KetoJourney-Backup-${date}.json
+      </div>`;
+    setTimeout(() => { const el = document.getElementById('exportStatus'); if(el) el.innerHTML=''; }, 5000);
+
+  } catch(e) {
+    document.getElementById('exportStatus').innerHTML =
+      '<div style="background:var(--bad-bg);color:var(--bad);border-radius:9px;padding:10px 12px;font-size:13px">Fehler beim Export: ' + e.message + '</div>';
+  }
+}
+
+function importData(input) {
+  const file = input.files[0];
+  if (!file) return;
+
+  const statusEl = document.getElementById('importStatus');
+  statusEl.innerHTML = '<div style="color:var(--lt);font-size:13px;padding:8px">Datei wird geladen...</div>';
+
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    try {
+      const parsed = JSON.parse(e.target.result);
+
+      // Validate structure
+      if (!parsed.data || !parsed.appName) {
+        throw new Error('Ungültiges Backup-Format. Bitte nur Keto Journey Backup-Dateien verwenden.');
+      }
+
+      const importedData = parsed.data;
+      const exportDate = parsed.exportDateDE || parsed.exportDate || 'Unbekannt';
+
+      // Count entries for confirmation
+      const wCount = importedData.weights?.length || 0;
+      const mCount = importedData.meals?.length || 0;
+      const sCount = importedData.steps?.length || 0;
+      const waterDays = Object.keys(importedData.water || {}).length;
+
+      // Store for safe access
+      _pendingImport = importedData;
+
+      // Show confirmation
+      statusEl.innerHTML = `
+        <div style="background:var(--warm);border-radius:10px;padding:14px;margin-bottom:10px">
+          <div style="font-size:13px;font-weight:600;color:var(--dark);margin-bottom:8px">Backup vom ${exportDate}</div>
+          <div style="font-size:12px;color:var(--mid);line-height:1.8">
+            ⚖️ ${wCount} Gewichtseinträge<br>
+            🍳 ${mCount} Mahlzeiten<br>
+            👟 ${sCount} Schritttage<br>
+            💧 ${waterDays} Wassertage
+          </div>
+        </div>
+        <div style="display:flex;gap:8px">
+          <button onclick="confirmImport()" 
+            class="btn" style="flex:1">✓ Importieren</button>
+          <button onclick="document.getElementById('importStatus').innerHTML='';document.getElementById('importFile').value=''"
+            class="btn btn-sec" style="flex:1">Abbrechen</button>
+        </div>`;
+
+    } catch(err) {
+      statusEl.innerHTML = `<div style="background:var(--bad-bg);color:var(--bad);border-radius:9px;padding:10px 12px;font-size:13px">
+        ❌ Fehler: ${err.message}
+      </div>`;
+    }
+  };
+  reader.onerror = () => {
+    statusEl.innerHTML = '<div style="background:var(--bad-bg);color:var(--bad);border-radius:9px;padding:10px;font-size:13px">Datei konnte nicht gelesen werden.</div>';
+  };
+  reader.readAsText(file);
+}
+
+let _pendingImport = null;
+
+function cancelImport() {
+  _pendingImport = null;
+  const el = document.getElementById('importStatus');
+  if(el) el.innerHTML = '';
+  const fi = document.getElementById('importFile');
+  if(fi) fi.value = '';
+}
+
+function confirmImport() {
+  if (!_pendingImport) { showToast('Kein Backup geladen'); return; }
+  try {
+    const importedData = _pendingImport;
+    
+    // Merge carefully – keep current weight if newer
+    S.weights = importedData.weights || S.weights;
+    S.meals   = importedData.meals   || S.meals;
+    S.steps   = importedData.steps   || S.steps;
+    S.water   = importedData.water   || S.water;
+    S.currentWeight = importedData.currentWeight || S.currentWeight;
+    if (importedData.fast) S.fast = importedData.fast;
+
+    save();
+
+    // Refresh all views
+    updateHeader();
+    renderMeals();
+    renderMacroBars();
+    renderMovement();
+    renderWeightLog();
+    checkPlateau();
+
+    document.getElementById('importStatus').innerHTML =
+      '<div style="background:var(--ok-bg);color:var(--ok);border-radius:9px;padding:10px 12px;font-size:13px;font-weight:500">✓ Daten erfolgreich importiert!</div>';
+    _pendingImport = null;
+    document.getElementById('importFile').value = '';
+    updateDataOverview();
+    showToast('✓ Backup erfolgreich geladen!');
+    setTimeout(() => { const el = document.getElementById('importStatus'); if(el) el.innerHTML=''; }, 4000);
+
+  } catch(e) {
+    document.getElementById('importStatus').innerHTML =
+      '<div style="background:var(--bad-bg);color:var(--bad);border-radius:9px;padding:10px;font-size:13px">Import fehlgeschlagen: ' + e.message + '</div>';
+  }
+}
+
+function updateLastBackupDate() {
+  const el = document.getElementById('lastBackupDate');
+  if (!el) return;
+  const last = _store.get('keto_last_backup');
+  if (last) {
+    const d = new Date(last);
+    const daysAgo = Math.floor((Date.now() - d.getTime()) / 86400000);
+    const label = daysAgo === 0 ? 'Heute' : daysAgo === 1 ? 'Gestern' : `Vor ${daysAgo} Tagen`;
+    const color = daysAgo > 14 ? 'var(--bad)' : daysAgo > 7 ? 'var(--warn)' : 'var(--ok)';
+    el.innerHTML = `<span style="color:${color}">${label}</span> · ${d.toLocaleDateString('de-DE',{day:'2-digit',month:'2-digit',year:'numeric'})}`;
+  } else {
+    el.textContent = 'Noch kein Backup erstellt';
+  }
+}
+
+function updateDataOverview() {
+  const el = document.getElementById('dataOverview');
+  if (!el) return;
+  const wCount = S.weights?.length || 0;
+  const mCount = S.meals?.length || 0;
+  const sCount = S.steps?.length || 0;
+  const waterDays = Object.keys(S.water || {}).length;
+  const firstDate = S.weights?.length ? S.weights[0].date : '–';
+  const sizeKB = Math.round(JSON.stringify(S).length / 1024 * 10) / 10;
+
+  el.innerHTML = `
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+      <div style="background:var(--warm);border-radius:10px;padding:11px;text-align:center">
+        <div style="font-size:22px;font-weight:700;color:var(--tc)">${wCount}</div>
+        <div style="font-size:10px;color:var(--lt);text-transform:uppercase;letter-spacing:.4px;margin-top:2px">Gewichtseinträge</div>
+      </div>
+      <div style="background:var(--warm);border-radius:10px;padding:11px;text-align:center">
+        <div style="font-size:22px;font-weight:700;color:var(--tc)">${mCount}</div>
+        <div style="font-size:10px;color:var(--lt);text-transform:uppercase;letter-spacing:.4px;margin-top:2px">Mahlzeiten</div>
+      </div>
+      <div style="background:var(--warm);border-radius:10px;padding:11px;text-align:center">
+        <div style="font-size:22px;font-weight:700;color:var(--tc)">${sCount}</div>
+        <div style="font-size:10px;color:var(--lt);text-transform:uppercase;letter-spacing:.4px;margin-top:2px">Schritttage</div>
+      </div>
+      <div style="background:var(--warm);border-radius:10px;padding:11px;text-align:center">
+        <div style="font-size:22px;font-weight:700;color:var(--tc)">${waterDays}</div>
+        <div style="font-size:10px;color:var(--lt);text-transform:uppercase;letter-spacing:.4px;margin-top:2px">Wassertage</div>
+      </div>
+    </div>
+    <div style="margin-top:10px;font-size:11px;color:var(--lt);text-align:center">
+      Aufzeichnungen seit ${firstDate} · Datengröße: ${sizeKB} KB
+    </div>`;
+}
+
+
+// ============ SMART STEPS VALIDATION ============
+function validateSteps(steps) {
+  if (steps > 80000) return 'Sind das wirklich ' + steps.toLocaleString('de-DE') + ' Schritte? Das wären über 60 km.';
+  if (steps < 100 && steps > 0) return 'Nur ' + steps + ' Schritte? Vielleicht nochmal prüfen?';
+  return null;
+}
+
+// ============ SMART WEIGHT VALIDATION ============  
+function validateWeight(val) {
+  if (S.weights.length === 0) return null;
+  const last = S.weights[S.weights.length - 1].value;
+  const diff = Math.abs(val - last);
+  if (diff > 3) {
+    return `Das ist ${diff.toFixed(1)} kg ${val > last ? 'mehr' : 'weniger'} als zuletzt (${last.toFixed(1)} kg). Stimmt das?`;
+  }
+  return null;
+}
+
+
+// ============ GAMIFICATION & STREAKS ============
+
+// Steps goal (saved in state)
+function getStepsGoal() { return S.stepsGoal || 7000; }
+
+function setStepsGoal(goal, btn) {
+  S.stepsGoal = goal;
+  save();
+  document.querySelectorAll('.goal-opt').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  else {
+    document.querySelectorAll('.goal-opt').forEach(b => {
+      if (parseInt(b.textContent.replace('.','')) === goal) b.classList.add('active');
+    });
+  }
+  renderMovement();
+}
+
+// ── STREAK CALCULATION (fortlaufend ab Starttag) ──────────────────────────
+// Returns current consecutive streak of days hitting the goal
+function calcStreak(entries, goalFn) {
+  // entries: array of {date, iso, value/steps}
+  // goalFn: fn(entry) => boolean (did they hit goal?)
+  if (!entries || entries.length === 0) return 0;
+
+  // Sort newest first
+  const sorted = [...entries].sort((a, b) => (b.iso || b.date) > (a.iso || a.date) ? 1 : -1);
+
+  // Walk back from today, counting consecutive goal days
+  const today = TODAY();
+  let streak = 0;
+  let expectedISO = today;
+
+  for (let i = 0; i < sorted.length; i++) {
+    const e = sorted[i];
+    const eISO = e.iso || e.date;
+
+    // Skip today if not yet entered (don't break streak)
+    if (eISO === today && !goalFn(e)) break;
+    if (eISO !== expectedISO) break; // gap in days
+
+    if (goalFn(e)) {
+      streak++;
+    } else {
+      break; // didn't hit goal this day
+    }
+
+    // Go back one day
+    const d = new Date(expectedISO);
+    d.setDate(d.getDate() - 1);
+    expectedISO = d.toISOString().split('T')[0];
+  }
+  return streak;
+}
+
+// ── STREAK MILESTONES (fortlaufend - never reset to zero, just accumulate) ──
+const STREAK_MILESTONES = [
+  { days: 3,  icon: '🌱', label: '3 Tage',   desc: 'Erster Streak!' },
+  { days: 5,  icon: '⚡', label: '5 Tage',   desc: 'Auf Kurs!' },
+  { days: 7,  icon: '🔥', label: '1 Woche',  desc: '7 Tage am Stück!' },
+  { days: 10, icon: '💪', label: '10 Tage',  desc: 'Eiserne Disziplin!' },
+  { days: 14, icon: '🏅', label: '2 Wochen', desc: 'Neue Gewohnheit!' },
+  { days: 21, icon: '🥇', label: '21 Tage',  desc: 'Gewohnheit gebildet!' },
+  { days: 30, icon: '👑', label: '30 Tage',  desc: 'Keto-Champion!' },
+];
+
+function renderStreakBadges(streak, containerId, flameId) {
+  // Flame display
+  const flame = document.getElementById(flameId);
+  if (flame) {
+    if (streak >= 3) {
+      flame.innerHTML = `<div class="streak-flame">
+        <div style="font-size:28px;line-height:1">🔥</div>
+        <div>
+          <div class="streak-flame-num">${streak} Tage</div>
+          <div class="streak-flame-lbl">aktueller Streak</div>
+        </div>
+      </div>`;
+    } else if (streak > 0) {
+      flame.innerHTML = `<div style="font-size:12px;color:var(--lt);margin-bottom:10px">
+        Noch ${3 - streak} ${3-streak===1?'Tag':'Tage'} bis zum ersten Badge!
+      </div>`;
+    } else {
+      flame.innerHTML = `<div style="font-size:12px;color:var(--lt);margin-bottom:10px">
+        Starte heute deinen Streak!
+      </div>`;
+    }
+  }
+
+  // Badges row
+  const container = document.getElementById(containerId);
+  if (!container) return;
+
+  const earned = STREAK_MILESTONES.filter(m => streak >= m.days);
+  const nextIdx = STREAK_MILESTONES.findIndex(m => streak < m.days);
+  const next = nextIdx >= 0 ? STREAK_MILESTONES[nextIdx] : null;
+
+  container.innerHTML = STREAK_MILESTONES.map((m, i) => {
+    const isEarned = streak >= m.days;
+    const isNext = next && m.days === next.days;
+    const cls = isEarned ? 'earned' : isNext ? 'active-next' : 'locked';
+    const remaining = m.days - streak;
+    return `<div class="sbadge ${cls}" title="${m.desc}">
+      <div class="sbadge-icon">${isEarned ? m.icon : '🔒'}</div>
+      <div class="sbadge-label">${m.label}</div>
+      <div class="sbadge-sub">${isEarned ? 'Erreicht!' : isNext ? `noch ${remaining}d` : `${m.days}d`}</div>
+    </div>`;
+  }).join('');
+}
+
+// ── CHALLENGES ─────────────────────────────────────────────────────────────
+const STEP_CHALLENGES = [
+  {
+    id: 'step_first',
+    name: '10.000 Schritte am Tag',
+    desc: 'Schreite einmal über 10.000 Schritte',
+    icon: '🚶',
+    check: () => S.steps.some(s => s.steps >= 10000),
+    progress: () => Math.min(100, (Math.max(...S.steps.map(s=>s.steps), 0) / 10000) * 100),
+  },
+  {
+    id: 'step_week',
+    name: '7 Tage Ziel erreicht',
+    desc: 'Jeden Tag diese Woche dein Tagesziel schaffen',
+    icon: '🗓️',
+    check: () => {
+      const goal = getStepsGoal();
+      const now = new Date();
+      const dow = (now.getDay()+6)%7;
+      let count = 0;
+      for (let i = 0; i <= dow; i++) {
+        const d = new Date(now); d.setDate(now.getDate()-dow+i);
+        const iso = d.toISOString().split('T')[0];
+        const e = S.steps.find(s => s.date === iso);
+        if (e && e.steps >= goal) count++;
+      }
+      return count === dow + 1;
+    },
+    progress: () => {
+      const goal = getStepsGoal();
+      const now = new Date();
+      const dow = (now.getDay()+6)%7;
+      let count = 0;
+      for (let i = 0; i <= dow; i++) {
+        const d = new Date(now); d.setDate(now.getDate()-dow+i);
+        const iso = d.toISOString().split('T')[0];
+        const e = S.steps.find(s => s.date === iso);
+        if (e && e.steps >= goal) count++;
+      }
+      return Math.round((count / 7) * 100);
+    },
+  },
+  {
+    id: 'step_total_50k',
+    name: '50.000 Schritte gesamt',
+    desc: 'Insgesamt 50.000 Schritte gesammelt',
+    icon: '⚡',
+    check: () => S.steps.reduce((a,s)=>a+s.steps,0) >= 50000,
+    progress: () => Math.min(100, (S.steps.reduce((a,s)=>a+s.steps,0) / 50000) * 100),
+  },
+  {
+    id: 'step_streak_7',
+    name: '7-Tage Streak',
+    desc: '7 Tage hintereinander dein Ziel erreichen',
+    icon: '🔥',
+    check: () => calcStreak(S.steps, e => e.steps >= getStepsGoal()) >= 7,
+    progress: () => Math.min(100, (calcStreak(S.steps, e => e.steps >= getStepsGoal()) / 7) * 100),
+  },
+];
+
+function renderChallenges(challenges, containerId) {
+  const el = document.getElementById(containerId);
+  if (!el) return;
+  el.innerHTML = challenges.map(ch => {
+    const done = ch.check();
+    const prog = ch.progress();
+    const cls = done ? 'done' : prog > 0 ? 'active' : 'locked';
+    return `<div class="challenge-item">
+      <div class="ch-icon ${cls}">${ch.icon}</div>
+      <div class="ch-body">
+        <div class="ch-name">${ch.name}</div>
+        <div class="ch-desc">${ch.desc}</div>
+        <div class="ch-prog"><div class="ch-prog-fill" style="width:${prog}%"></div></div>
+      </div>
+      <div class="ch-badge ${cls}">${done ? '✓ Done' : Math.round(prog)+'%'}</div>
+    </div>`;
+  }).join('');
+}
+
+// ── FOOD & WATER STREAKS ───────────────────────────────────────────────────
+// Food streak: days with at least 1 meal logged
+function getFoodStreak() {
+  const byDay = {};
+  S.meals.forEach(m => { byDay[m.date] = true; });
+  const entries = Object.keys(byDay).map(iso => ({ iso, hit: true }));
+  return calcStreak(entries, () => true);
+}
+
+// Water streak: days hitting water goal
+function getWaterStreak() {
+  const entries = Object.keys(S.water || {}).map(iso => ({
+    iso,
+    ml: S.water[iso]
+  }));
+  return calcStreak(entries, e => e.ml >= 1500); // 1.5L minimum
+}
+
+const FOOD_CHALLENGES = [
+  { id:'food_3', name:'3 Tage Mahlzeiten geloggt', desc:'Jeden Tag mindestens eine Mahlzeit eintragen', icon:'🍳',
+    check:()=>getFoodStreak()>=3, progress:()=>Math.min(100,(getFoodStreak()/3)*100) },
+  { id:'food_5', name:'5 Tage am Stück', desc:'Fortlaufend – Zählung nie unterbrochen', icon:'🥗',
+    check:()=>getFoodStreak()>=5, progress:()=>Math.min(100,(getFoodStreak()/5)*100) },
+  { id:'food_7', name:'1 Woche durch', desc:'7 Tage lückenlos geloggt', icon:'📋',
+    check:()=>getFoodStreak()>=7, progress:()=>Math.min(100,(getFoodStreak()/7)*100) },
+  { id:'food_10', name:'10 Tage Disziplin', desc:'Keto-Profi Level', icon:'🏆',
+    check:()=>getFoodStreak()>=10, progress:()=>Math.min(100,(getFoodStreak()/10)*100) },
+];
+
+const WATER_CHALLENGES = [
+  { id:'water_3', name:'3 Tage Wasserziel', desc:'Mindestens 1,5L täglich – 3 Tage am Stück', icon:'💧',
+    check:()=>getWaterStreak()>=3, progress:()=>Math.min(100,(getWaterStreak()/3)*100) },
+  { id:'water_5', name:'5 Tage gut hydriert', desc:'Fortlaufend ab dem ersten Tag', icon:'🫙',
+    check:()=>getWaterStreak()>=5, progress:()=>Math.min(100,(getWaterStreak()/5)*100) },
+  { id:'water_7', name:'1 Woche Wasser-Held', desc:'7 Tage ununterbrochen', icon:'🌊',
+    check:()=>getWaterStreak()>=7, progress:()=>Math.min(100,(getWaterStreak()/7)*100) },
+  { id:'water_10', name:'10 Tage Hydration', desc:'Elektrolyt-Champion', icon:'⚡',
+    check:()=>getWaterStreak()>=10, progress:()=>Math.min(100,(getWaterStreak()/10)*100) },
+];
+
+
+
+function renderFoodStreaks() {
+  const streak = getFoodStreak();
+  renderStreakBadges(streak, 'foodStreakBadges', 'foodStreakFlame');
+  renderChallenges(FOOD_CHALLENGES, 'foodChallenges');
+}
+
+function renderWaterStreaks() {
+  const streak = getWaterStreak();
+  renderStreakBadges(streak, 'waterStreakBadges', 'waterStreakFlame');
+  renderChallenges(WATER_CHALLENGES, 'waterChallenges');
+}
+
+// ============ INIT ============
+// Restore fasting state
+if(S.fast.active&&S.fast.startTs){
+  document.getElementById('fastBtn').textContent='Fasten beenden';
+  document.getElementById('fastBtn').className='fast-start-btn running';
+  document.getElementById('fastGoalH').textContent=S.fast.planH+'h';
+  document.getElementById('fastEatH').textContent=S.fast.planEatH+'h';
+  document.getElementById('fplan-'+S.fast.planH)?.classList.add('active');
+  document.querySelectorAll('.fplan-btn:not(#fplan-'+S.fast.planH+')').forEach(b=>b.classList.remove('active'));
+  startFastTick();
+}
+
+// Safe init - wait for DOM
+function initApp(){
+  try{
+    updateHeader();
+    renderMeals();
+    renderMacroBars();
+    renderMovement();
+    renderWeightLog();
+    loadDaily();
+    checkPlateau();
+    updateLastBackupDate();
+    updateDataOverview();
+    console.log('KetoJourney initialized successfully');
+  }catch(e){
+    console.error('Init error:', e);
+  }
+}
+if(document.readyState==='loading'){
+  document.addEventListener('DOMContentLoaded', initApp);
+} else {
+  initApp();
+}
+</script>
+</body>
+</html>
