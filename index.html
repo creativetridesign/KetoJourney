@@ -2342,12 +2342,27 @@ async function testApiUrl() {
       }),
       new Promise((_, r) => setTimeout(() => r(new Error('timeout')), 8000))
     ]);
+    const responseText = await res.text();
     if (res.ok || res.status === 200) {
       showApiStatus('ok', '✓ Verbindung funktioniert! KI-Schätzung ist aktiv.');
       _store.set('keto_api_url', url);
       API_URL = url;
     } else {
-      showApiStatus('warn', `⚠️ Server antwortet mit Status ${res.status}. URL prüfen.`);
+      // Parse Anthropic error for user-friendly message
+      let detail = '';
+      try {
+        const err = JSON.parse(responseText);
+        detail = err.error?.message || err.details || responseText;
+      } catch(e) { detail = responseText; }
+
+      let tip = '';
+      if (res.status === 400) tip = 'Mögliche Ursachen: falscher Modellname im Worker, oder Key-Format ungültig.';
+      if (res.status === 401) tip = 'API Key ungültig – bitte in Cloudflare nochmal prüfen.';
+      if (res.status === 403) tip = 'Zugriff verweigert – Origin nicht erlaubt im Worker.';
+      if (res.status === 429) tip = 'Zu viele Anfragen – kurz warten.';
+
+      showApiStatus('bad',
+        `Status ${res.status}: ${detail.substring(0,120)}<br><br><b>Tipp:</b> ${tip}`);
     }
   } catch(e) {
     showApiStatus('bad', `✗ Keine Verbindung: ${e.message}`);
